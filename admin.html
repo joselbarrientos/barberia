@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barber Master | Administración</title>
+    <style>
+        :root { --gold: #d5ad3d; --dark: #11100f; --panel: #1b1917; }
+        * { box-sizing: border-box; }
+        body {
+            min-height: 100vh; margin: 0; padding: 24px;
+            color: white; background: var(--dark);
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        .panel {
+            width: min(100%, 520px); margin: 40px auto; padding: 32px;
+            background: var(--panel); border: 1px solid rgba(213,173,61,.35);
+            border-radius: 12px;
+        }
+        h1 { margin-top: 0; color: var(--gold); letter-spacing: 1px; }
+        label { display: block; margin: 18px 0 7px; font-weight: bold; }
+        input {
+            width: 100%; padding: 12px; color: white; background: #111;
+            border: 1px solid #444; border-radius: 6px; font-size: 16px;
+        }
+        button {
+            width: 100%; margin-top: 24px; padding: 13px; color: #111;
+            background: var(--gold); border: 0; border-radius: 6px;
+            cursor: pointer; font-weight: bold;
+        }
+        button:disabled { cursor: wait; opacity: .65; }
+        #message { min-height: 22px; margin-top: 18px; }
+        .success { color: #78d68a; }
+        .error { color: #f28b82; }
+        a { display: inline-block; margin-top: 20px; color: var(--gold); }
+    </style>
+</head>
+<body>
+    <main class="panel">
+        <h1>Crear empleado</h1>
+        <p>Solo los usuarios con el rol <code>admin</code> pueden usar este panel.</p>
+
+        <form id="employeeForm">
+            <label for="name">Nombre completo</label>
+            <input id="name" type="text" required maxlength="100">
+
+            <label for="email">Correo electrónico</label>
+            <input id="email" type="email" required autocomplete="email">
+
+            <label for="password">Contraseña temporal</label>
+            <input id="password" type="password" required minlength="6" autocomplete="new-password">
+
+            <button id="submitButton" type="submit">CREAR EMPLEADO</button>
+            <p id="message" role="alert"></p>
+        </form>
+
+        <a href="dashboard.html">Volver al dashboard</a>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = "https://nxfkpmjfopwdlblahlix.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_UpfXLFD4dPyhezCh8bQ7aQ_E0viD5zV";
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const form = document.getElementById("employeeForm");
+        const button = document.getElementById("submitButton");
+        const message = document.getElementById("message");
+
+        async function mensajeErrorFuncion(error) {
+            if (error?.context instanceof Response) {
+                try {
+                    const body = await error.context.json();
+                    return body.error || error.message;
+                } catch {
+                    return error.message;
+                }
+            }
+
+            return error?.message || "No se pudo crear el empleado.";
+        }
+
+        async function validarAdministrador() {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (!session) {
+                window.location.href = "login.html";
+                return false;
+            }
+            if (session.user.user_metadata?.role !== "admin") {
+                message.textContent = "No tienes permisos de administrador.";
+                message.className = "error";
+                form.style.display = "none";
+                return false;
+            }
+            return true;
+        }
+
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            message.textContent = "";
+            button.disabled = true;
+
+            const { data, error } = await supabaseClient.functions.invoke(
+                "create-employee",
+                {
+                    body: {
+                        nombre: document.getElementById("name").value.trim(),
+                        email: document.getElementById("email").value.trim(),
+                        password: document.getElementById("password").value
+                    }
+                }
+            );
+
+            if (error) {
+                message.textContent = await mensajeErrorFuncion(error);
+                message.className = "error";
+                button.disabled = false;
+                return;
+            }
+
+            message.textContent = `Empleado creado correctamente: ${data.nombre}`;
+            message.className = "success";
+            form.reset();
+            button.disabled = false;
+        });
+
+        validarAdministrador();
+    </script>
+</body>
+</html>

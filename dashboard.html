@@ -240,6 +240,85 @@
             color: #888;
         }
 
+        .walk-in {
+            margin-bottom: 35px;
+            padding: 24px;
+            background: #151515;
+            border: 1px solid #302814;
+            border-radius: 12px;
+        }
+
+        .walk-in h2 {
+            margin-bottom: 8px;
+            font-size: 20px;
+        }
+
+        .walk-in-description {
+            margin-bottom: 20px;
+            color: #999;
+            font-size: 14px;
+        }
+
+        .walk-in-form {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .walk-in-form label {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            color: #bbb;
+            font-size: 13px;
+        }
+
+        .walk-in-form input,
+        .walk-in-form select {
+            width: 100%;
+            padding: 11px;
+            color: white;
+            background: #0d0d0d;
+            border: 1px solid #444;
+            border-radius: 6px;
+        }
+
+        .walk-in-form input:focus,
+        .walk-in-form select:focus {
+            outline: 2px solid #d4af37;
+            border-color: #d4af37;
+        }
+
+        .walk-in-form button {
+            width: fit-content;
+            padding: 11px 18px;
+            color: #111;
+            background: #d4af37;
+            border: 0;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .walk-in-form button:disabled {
+            cursor: wait;
+            opacity: .65;
+        }
+
+        .walk-in-message {
+            min-height: 20px;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .walk-in-message.success {
+            color: #70d388;
+        }
+
+        .walk-in-message.error {
+            color: #ff7777;
+        }
+
         /* =========================
            RESPONSIVE
         ========================= */
@@ -273,6 +352,10 @@
 
             .card-value {
                 font-size: 21px;
+            }
+
+            .walk-in-form {
+                grid-template-columns: 1fr;
             }
 
             .barber-name {
@@ -311,6 +394,14 @@
             <span id="barberName" class="barber-name">
                 Barbero
             </span>
+
+            <a
+                id="adminLink"
+                class="logout"
+                href="admin.html"
+                style="display:none; text-decoration:none;">
+                ADMINISTRACIÓN
+            </a>
 
             <button class="logout" onclick="cerrarSesion()">
                 CERRAR SESIÓN
@@ -419,6 +510,65 @@
 
 
     <!-- =========================
+         CLIENTE EN EL LOCAL
+    ========================= -->
+
+    <section class="walk-in">
+
+        <h2>Registrar cliente del local</h2>
+
+        <p class="walk-in-description">
+            Agrega una cita de un cliente que llegó sin reservar en línea.
+        </p>
+
+        <form id="walkInForm" class="walk-in-form">
+
+            <label>
+                Nombre del cliente
+                <input id="walkInName" type="text" required maxlength="100">
+            </label>
+
+            <label>
+                Teléfono
+                <input id="walkInPhone" type="tel" maxlength="30">
+            </label>
+
+            <label>
+                Fecha
+                <input id="walkInDate" type="date" required>
+            </label>
+
+            <label>
+                Hora
+                <select id="walkInTime" required>
+                    <option value="">Selecciona una hora</option>
+                </select>
+            </label>
+
+            <label>
+                Servicio
+                <select id="walkInService" required>
+                    <option value="">Selecciona un servicio</option>
+                    <option value="Corte Clásico">Corte Clásico</option>
+                    <option value="Barba Premium">Barba Premium</option>
+                    <option value="Combo Master">Combo Master</option>
+                </select>
+            </label>
+
+            <div>
+                <button id="walkInButton" type="submit">
+                    AGREGAR A MI AGENDA
+                </button>
+            </div>
+
+        </form>
+
+        <p id="walkInMessage" class="walk-in-message" role="alert"></p>
+
+    </section>
+
+
+    <!-- =========================
          TABLA DE CITAS
     ========================= -->
 
@@ -506,6 +656,8 @@ const supabaseClient =
         SUPABASE_KEY
     );
 
+let barberActualId = null;
+
 
 /* =====================================================
    PRECIOS DE LOS SERVICIOS
@@ -520,6 +672,154 @@ const precios = {
     "Combo Master": 40000
 
 };
+
+
+function obtenerHorariosClienteLocal() {
+
+    const horarios = [];
+
+    for (let minutos = 9 * 60; minutos < 18 * 60; minutos += 30) {
+        const hora = String(Math.floor(minutos / 60)).padStart(2, "0");
+        const minuto = String(minutos % 60).padStart(2, "0");
+        horarios.push(`${hora}:${minuto}`);
+    }
+
+    return horarios;
+
+}
+
+
+async function cargarHorariosClienteLocal() {
+
+    const selector = document.getElementById("walkInTime");
+    const fecha = document.getElementById("walkInDate").value;
+    const horarios = obtenerHorariosClienteLocal();
+
+    selector.innerHTML = `<option value="">Consultando horarios...</option>`;
+    selector.disabled = true;
+
+    if (!barberActualId || !fecha) {
+        selector.innerHTML =
+            `<option value="">Selecciona una fecha</option>`;
+        return;
+    }
+
+    const { data, error } =
+        await supabaseClient
+            .from("citas")
+            .select("hora, estado")
+            .eq("barbero_id", barberActualId)
+            .eq("fecha", fecha)
+            .neq("estado", "cancelada");
+
+    if (error) {
+        console.error("Error consultando horarios:", error);
+        selector.innerHTML =
+            `<option value="">No se pudieron consultar</option>`;
+        return;
+    }
+
+    const ocupados = new Set(
+        (data || []).map(cita => String(cita.hora).slice(0, 5))
+    );
+
+    selector.innerHTML =
+        `<option value="">Selecciona una hora</option>`;
+
+    horarios.forEach(hora => {
+        const ocupado = ocupados.has(hora);
+        const option = document.createElement("option");
+
+        option.value = hora;
+        option.disabled = ocupado;
+        option.textContent = ocupado
+            ? `${hora} - Ocupado`
+            : `${hora} - Disponible`;
+
+        selector.appendChild(option);
+    });
+
+    selector.disabled = horarios.every(hora => ocupados.has(hora));
+}
+
+
+async function registrarClienteLocal(event) {
+
+    event.preventDefault();
+
+    const message = document.getElementById("walkInMessage");
+    const button = document.getElementById("walkInButton");
+    const fecha = document.getElementById("walkInDate").value;
+    const hora = document.getElementById("walkInTime").value;
+    const nombre = document.getElementById("walkInName").value.trim();
+    const telefono = document.getElementById("walkInPhone").value.trim();
+    const servicio = document.getElementById("walkInService").value;
+
+    message.textContent = "";
+    message.className = "walk-in-message";
+
+    if (!barberActualId) {
+        message.textContent = "No se pudo identificar al barbero.";
+        message.classList.add("error");
+        return;
+    }
+
+    button.disabled = true;
+
+    await cargarHorariosClienteLocal();
+
+    const { data: existente, error: errorConsulta } =
+        await supabaseClient
+            .from("citas")
+            .select("id")
+            .eq("barbero_id", barberActualId)
+            .eq("fecha", fecha)
+            .eq("hora", hora)
+            .neq("estado", "cancelada")
+            .limit(1);
+
+    if (errorConsulta) {
+        console.error(errorConsulta);
+        message.textContent = "No se pudo comprobar la disponibilidad.";
+        message.classList.add("error");
+        button.disabled = false;
+        return;
+    }
+
+    if (existente && existente.length > 0) {
+        message.textContent = "Ese horario ya está ocupado.";
+        message.classList.add("error");
+        button.disabled = false;
+        return;
+    }
+
+    const { error } =
+        await supabaseClient
+            .from("citas")
+            .insert({
+                cliente_nombre: nombre,
+                cliente_telefono: telefono,
+                servicio,
+                barbero_id: barberActualId,
+                fecha,
+                hora,
+                estado: "pendiente"
+            });
+
+    if (error) {
+        console.error(error);
+        message.textContent = "No se pudo registrar la cita: " + error.message;
+        message.classList.add("error");
+        button.disabled = false;
+        return;
+    }
+
+    document.getElementById("walkInForm").reset();
+    message.textContent = "Cliente agregado correctamente a tu agenda.";
+    message.classList.add("success");
+    button.disabled = false;
+    await iniciarDashboard();
+}
 
 
 /* =====================================================
@@ -589,6 +889,10 @@ async function iniciarDashboard() {
     }
 
 
+    if (session.user.user_metadata?.role === "admin") {
+        document.getElementById("adminLink").style.display = "inline-block";
+    }
+
     /*
        El barbero_id se guarda en
        User Metadata de Supabase.
@@ -600,6 +904,10 @@ async function iniciarDashboard() {
 
     if (!barberId) {
 
+        if (session.user.user_metadata?.role === "admin") {
+            return;
+        }
+
         alert(
             "Esta cuenta no está asociada a un barbero."
         );
@@ -608,6 +916,8 @@ async function iniciarDashboard() {
 
     }
 
+    barberActualId = barberId;
+    await cargarHorariosClienteLocal();
 
     /* Mostrar correo si se necesita */
 
@@ -966,14 +1276,17 @@ async function marcarAtendida(id) {
     }
 
 
+    /*
+       Volver a consultar las citas antes de mostrar la confirmación.
+       Así los contadores y la tabla muestran el estado actualizado.
+    */
+    await iniciarDashboard();
+
     alert(
-        "Cita marcada como atendida."
+        "Cita marcada como atendida. " +
+        "Se actualizaron los servicios realizados, las citas pendientes " +
+        "y el dinero del día."
     );
-
-
-    /* Recargar dashboard */
-
-    iniciarDashboard();
 
 }
 
@@ -997,6 +1310,22 @@ async function cerrarSesion() {
 ===================================================== */
 
 iniciarDashboard();
+
+cargarHorariosClienteLocal();
+
+const fechaClienteLocal =
+    document.getElementById("walkInDate");
+
+fechaClienteLocal.min = obtenerFechaHoy();
+fechaClienteLocal.value = obtenerFechaHoy();
+
+document
+    .getElementById("walkInForm")
+    .addEventListener("submit", registrarClienteLocal);
+
+document
+    .getElementById("walkInDate")
+    .addEventListener("change", cargarHorariosClienteLocal);
 
 </script>
 
