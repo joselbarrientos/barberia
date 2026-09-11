@@ -1,0 +1,2755 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Barber Master | Hair & Shop</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #11100f;
+            color: #fff;
+        }
+
+        :root {
+            --gold: #d5ad3d;
+            --gold-light: #f1ce67;
+            --dark: #11100f;
+            --dark2: #1b1917;
+            --brown: #2b211b;
+            --gray: #aaa;
+        }
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 6%;
+
+            z-index: 1000;
+
+            background: rgba(10, 9, 8, .88);
+
+            backdrop-filter: blur(10px);
+
+            border-bottom:
+                1px solid rgba(213, 173, 61, .15);
+        }
+
+        .logo {
+            color: var(--gold);
+            font-weight: 900;
+            font-size: 22px;
+            letter-spacing: 2px;
+        }
+
+        .logo span {
+            display: block;
+            color: white;
+            font-size: 9px;
+            letter-spacing: 5px;
+            margin-top: 3px;
+        }
+
+        nav {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+
+        nav a {
+            color: #eee;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: bold;
+            transition: .3s;
+        }
+
+        nav a:hover {
+            color: var(--gold);
+        }
+
+        .btn-barberos {
+            border: 1px solid var(--gold);
+            padding: 10px 14px;
+            color: var(--gold) !important;
+        }
+
+        .btn-barberos:hover {
+            background: var(--gold);
+            color: #111 !important;
+        }
+
+        .header-buttons {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .cart-button {
+            position: relative;
+
+            border: none;
+
+            background: var(--gold);
+
+            color: #111;
+
+            padding: 14px 18px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: .3s;
+        }
+
+        .cart-button:hover {
+            background: var(--gold-light);
+            transform: translateY(-2px);
+        }
+
+        #cartCount {
+            position: absolute;
+
+            top: -8px;
+            right: -8px;
+
+            background: #e63946;
+
+            color: white;
+
+            width: 21px;
+            height: 21px;
+
+            border-radius: 50%;
+
+            font-size: 12px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* =========================
+           HERO
+        ========================= */
+
+        .hero {
+            min-height: 760px;
+
+            display: flex;
+
+            align-items: center;
+
+            position: relative;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(15, 12, 10, .88),
+                    rgba(15, 12, 10, .55),
+                    rgba(15, 12, 10, .82)
+                ),
+                url("hero.jpg");
+
+            background-size: cover;
+
+            background-position: center;
+        }
+
+        .hero-content {
+            width: 100%;
+
+            padding:
+                100px 8% 50px;
+        }
+
+        .small-title {
+            color: var(--gold);
+
+            letter-spacing: 5px;
+
+            font-size: 13px;
+
+            margin-bottom: 20px;
+
+            font-weight: bold;
+        }
+
+        .hero h1 {
+            max-width: 800px;
+
+            font-size:
+                clamp(55px, 8vw, 105px);
+
+            line-height: .88;
+
+            font-weight: 900;
+
+            text-transform: uppercase;
+        }
+
+        .hero h1 span {
+            color: var(--gold);
+        }
+
+        .hero p {
+            max-width: 540px;
+
+            color: #ccc;
+
+            line-height: 1.7;
+
+            margin: 30px 0;
+
+            font-size: 16px;
+        }
+
+        .hero-buttons {
+            display: flex;
+
+            gap: 15px;
+
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 16px 28px;
+
+            border: none;
+
+            cursor: pointer;
+
+            font-weight: bold;
+
+            text-decoration: none;
+
+            display: inline-block;
+
+            transition: .3s;
+        }
+
+        .btn-gold {
+            background: var(--gold);
+
+            color: #111;
+        }
+
+        .btn-dark {
+            border: 1px solid var(--gold);
+
+            color: white;
+
+            background: transparent;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+        }
+
+        /* =========================
+           STATS
+        ========================= */
+
+        .stats {
+            background: #151311;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            border-top:
+                1px solid #332b24;
+
+            border-bottom:
+                1px solid #332b24;
+        }
+
+        .stat {
+            padding: 35px;
+
+            text-align: center;
+
+            border-right:
+                1px solid #332b24;
+        }
+
+        .stat:last-child {
+            border-right: none;
+        }
+
+        .stat strong {
+            display: block;
+
+            color: var(--gold);
+
+            font-size: 28px;
+
+            margin-bottom: 7px;
+        }
+
+        .stat span {
+            color: #aaa;
+
+            font-size: 12px;
+
+            letter-spacing: 2px;
+        }
+
+        /* =========================
+           SECTIONS
+        ========================= */
+
+        section {
+            padding: 100px 8%;
+        }
+
+        .section-title {
+            text-align: center;
+
+            margin-bottom: 55px;
+        }
+
+        .section-title small {
+            color: var(--gold);
+
+            letter-spacing: 4px;
+
+            font-weight: bold;
+        }
+
+        .section-title h2 {
+            font-size: 45px;
+
+            margin-top: 12px;
+
+            text-transform: uppercase;
+        }
+
+        .section-title p {
+            color: #999;
+
+            margin-top: 15px;
+        }
+
+        /* =========================
+           SERVICES
+        ========================= */
+
+        .services {
+            background: #11100f;
+        }
+
+        .cards {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 25px;
+        }
+
+        .card {
+            background: #1a1816;
+
+            border: 1px solid #302923;
+
+            padding: 35px;
+
+            position: relative;
+
+            transition: .3s;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+
+            border-color: var(--gold);
+        }
+
+        .card-icon {
+            font-size: 40px;
+
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            font-size: 22px;
+
+            margin-bottom: 12px;
+        }
+
+        .card p {
+            color: #999;
+
+            line-height: 1.6;
+
+            margin-bottom: 25px;
+        }
+
+        .price {
+            color: var(--gold);
+
+            font-size: 25px;
+
+            font-weight: bold;
+        }
+
+        .add-cart {
+            width: 100%;
+
+            margin-top: 20px;
+
+            padding: 13px;
+
+            border: none;
+
+            background: var(--gold);
+
+            cursor: pointer;
+
+            font-weight: bold;
+
+            transition: .3s;
+        }
+
+        .add-cart:hover {
+            background: var(--gold-light);
+        }
+
+        /* =========================
+           BARBERS
+        ========================= */
+
+        .barbers {
+            background: #181513;
+        }
+
+        .barber-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 25px;
+        }
+
+        .barber {
+            background: #0f0e0d;
+
+            text-align: center;
+
+            border: 1px solid #302923;
+
+            overflow: hidden;
+        }
+
+        .barber-photo {
+            height: 280px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #382b21,
+                    #111
+                );
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 80px;
+        }
+
+        .barber-info {
+            padding: 25px;
+        }
+
+        .barber-info h3 {
+            font-size: 22px;
+        }
+
+        .barber-info p {
+            color: var(--gold);
+
+            margin-top: 7px;
+        }
+
+        /* =========================
+           SHOP
+        ========================= */
+
+        .shop {
+            background: #11100f;
+        }
+
+        .product {
+            background: #1a1816;
+
+            border: 1px solid #302923;
+
+            padding: 25px;
+
+            text-align: center;
+        }
+
+        .product-img {
+            height: 220px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #29221d,
+                    #0c0b0a
+                );
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 75px;
+
+            margin-bottom: 20px;
+        }
+
+        .product h3 {
+            margin-bottom: 10px;
+        }
+
+        /* =========================
+           CONTACT
+        ========================= */
+
+        .contact {
+            background:
+                linear-gradient(
+                    rgba(0,0,0,.85),
+                    rgba(0,0,0,.9)
+                ),
+                url("hero.jpg");
+
+            background-size: cover;
+
+            background-position: center;
+        }
+
+        .contact-container {
+            max-width: 800px;
+
+            margin: auto;
+
+            text-align: center;
+        }
+
+        .contact-container p {
+            color: #bbb;
+
+            line-height: 1.7;
+
+            margin-bottom: 30px;
+        }
+
+        .contact-info {
+            display: flex;
+
+            justify-content: center;
+
+            gap: 40px;
+
+            flex-wrap: wrap;
+
+            margin-bottom: 30px;
+        }
+
+        .contact-item {
+            color: #ddd;
+        }
+
+        .contact-item strong {
+            display: block;
+
+            color: var(--gold);
+
+            margin-bottom: 5px;
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        footer {
+            background: #0a0908;
+
+            padding: 35px 8%;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            color: #777;
+
+            font-size: 13px;
+        }
+
+        footer strong {
+            color: var(--gold);
+        }
+
+        /* =========================
+           CART
+        ========================= */
+
+        .cart-overlay {
+            position: fixed;
+
+            inset: 0;
+
+            background:
+                rgba(0,0,0,.7);
+
+            z-index: 2000;
+
+            display: none;
+        }
+
+        .cart-overlay.active {
+            display: block;
+        }
+
+        .cart {
+            position: absolute;
+
+            right: 0;
+
+            top: 0;
+
+            width: min(430px, 100%);
+
+            height: 100%;
+
+            background: #171513;
+
+            padding: 30px;
+
+            overflow-y: auto;
+
+            box-shadow:
+                -10px 0 40px
+                rgba(0,0,0,.5);
+        }
+
+        .cart-header {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            border-bottom:
+                1px solid #382f27;
+
+            padding-bottom: 20px;
+
+            margin-bottom: 20px;
+        }
+
+        .cart-header h2 {
+            color: var(--gold);
+        }
+
+        .close-cart {
+            background: transparent;
+
+            color: white;
+
+            border: none;
+
+            font-size: 28px;
+
+            cursor: pointer;
+        }
+
+        .cart-item {
+            display: flex;
+
+            justify-content: space-between;
+
+            gap: 15px;
+
+            padding: 15px 0;
+
+            border-bottom:
+                1px solid #2d2722;
+        }
+
+        .cart-item-info h4 {
+            margin-bottom: 5px;
+        }
+
+        .cart-item-info p {
+            color: var(--gold);
+        }
+
+        .remove {
+            border: none;
+
+            color: #ff6b6b;
+
+            background: transparent;
+
+            cursor: pointer;
+        }
+
+        .cart-total {
+            display: flex;
+
+            justify-content: space-between;
+
+            font-size: 22px;
+
+            margin: 25px 0;
+        }
+
+        .checkout {
+            width: 100%;
+
+            padding: 17px;
+
+            background: var(--gold);
+
+            border: none;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        .empty-cart {
+            text-align: center;
+
+            color: #888;
+
+            padding: 50px 0;
+        }
+
+        /* =========================
+           NOTIFICATION
+        ========================= */
+
+        #notification {
+            position: fixed;
+
+            right: 25px;
+
+            bottom: 25px;
+
+            background: #1c1a18;
+
+            border-left:
+                4px solid var(--gold);
+
+            padding: 18px 25px;
+
+            min-width: 280px;
+
+            box-shadow:
+                0 10px 40px
+                rgba(0,0,0,.5);
+
+            transform:
+                translateX(130%);
+
+            transition: .4s;
+
+            z-index: 5000;
+        }
+
+        #notification.show {
+            transform:
+                translateX(0);
+        }
+
+        #notification strong {
+            color: var(--gold);
+        }
+
+        /* =========================
+           MODAL
+        ========================= */
+
+        .modal {
+            position: fixed;
+
+            inset: 0;
+
+            background:
+                rgba(0,0,0,.8);
+
+            z-index: 3000;
+
+            display: none;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background: #191715;
+
+            width: min(500px, 100%);
+
+            padding: 35px;
+
+            border: 1px solid #3b3027;
+
+            position: relative;
+
+            max-height: 90vh;
+
+            overflow-y: auto;
+        }
+
+        .modal-box h2 {
+            color: var(--gold);
+
+            margin-bottom: 25px;
+        }
+
+        .close-modal {
+            position: absolute;
+
+            right: 20px;
+
+            top: 15px;
+
+            background: none;
+
+            border: none;
+
+            color: white;
+
+            font-size: 25px;
+
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+
+            color: #aaa;
+
+            font-size: 13px;
+
+            margin-bottom: 7px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+
+            padding: 14px;
+
+            background: #0e0d0c;
+
+            border: 1px solid #3a3029;
+
+            color: white;
+
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--gold);
+        }
+
+        .submit-reservation {
+            width: 100%;
+
+            padding: 15px;
+
+            border: none;
+
+            background: var(--gold);
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        .submit-reservation:disabled {
+            opacity: .6;
+
+            cursor: not-allowed;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        .menu-toggle {
+            display: none;
+
+            background: none;
+
+            border: none;
+
+            color: white;
+
+            font-size: 25px;
+
+            cursor: pointer;
+        }
+
+        @media(max-width: 1100px) {
+
+            nav {
+                gap: 12px;
+            }
+
+            nav a {
+                font-size: 11px;
+            }
+
+        }
+
+        @media(max-width: 800px) {
+
+            header {
+                padding: 0 5%;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            nav {
+                position: absolute;
+
+                top: 80px;
+
+                left: 0;
+
+                width: 100%;
+
+                background: #11100f;
+
+                flex-direction: column;
+
+                padding: 25px;
+
+                display: none;
+            }
+
+            nav.active {
+                display: flex;
+            }
+
+            .hero {
+                min-height: 680px;
+            }
+
+            .hero h1 {
+                font-size: 55px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .stat {
+                border-right: none;
+
+                border-bottom:
+                    1px solid #332b24;
+            }
+
+            .cards,
+            .barber-grid {
+                grid-template-columns: 1fr;
+            }
+
+            section {
+                padding: 75px 6%;
+            }
+
+            .section-title h2 {
+                font-size: 35px;
+            }
+
+            footer {
+                flex-direction: column;
+
+                gap: 15px;
+
+                text-align: center;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================
+     HEADER
+========================= -->
+
+<header>
+
+    <div class="logo">
+
+        BARBER MASTER
+
+        <span>
+            HAIR & SHOP
+        </span>
+
+    </div>
+
+
+    <button
+        class="menu-toggle"
+        onclick="toggleMenu()">
+
+        ☰
+
+    </button>
+
+
+    <nav id="navbar">
+
+        <a href="#inicio"
+           onclick="closeMenu()">
+
+            INICIO
+
+        </a>
+
+        <a href="#servicios"
+           onclick="closeMenu()">
+
+            SERVICIOS
+
+        </a>
+
+        <a href="#barberos"
+           onclick="closeMenu()">
+
+            BARBEROS
+
+        </a>
+
+        <a href="#tienda"
+           onclick="closeMenu()">
+
+            TIENDA
+
+        </a>
+
+        <a href="#contacto"
+           onclick="closeMenu()">
+
+            CONTACTO
+
+        </a>
+
+        <a
+            href="login.html"
+            class="btn-barberos">
+
+            🔐 PORTAL BARBEROS
+
+        </a>
+
+    </nav>
+
+
+    <div class="header-buttons">
+
+        <button
+            class="cart-button"
+            onclick="openCart()">
+
+            🛒 CARRITO
+
+            <span id="cartCount">
+                0
+            </span>
+
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- =========================
+     HERO
+========================= -->
+
+<section
+    class="hero"
+    id="inicio">
+
+    <div class="hero-content">
+
+        <div class="small-title">
+
+            BARBERÍA PREMIUM
+
+        </div>
+
+
+        <h1>
+
+            CUIDAMOS<br>
+
+            <span>
+                TU BARBA
+            </span>
+
+        </h1>
+
+
+        <p>
+
+            Estilo, precisión y tradición
+            en cada corte.
+
+            Ven a vivir una experiencia
+            premium en nuestra barbería.
+
+        </p>
+
+
+        <div class="hero-buttons">
+
+            <button
+                class="btn btn-gold"
+                onclick="openReservation()">
+
+                RESERVAR CITA
+
+            </button>
+
+
+            <a
+                href="#servicios"
+                class="btn btn-dark">
+
+                VER SERVICIOS
+
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     STATS
+========================= -->
+
+<div class="stats">
+
+    <div class="stat">
+
+        <strong>
+            24+
+        </strong>
+
+        <span>
+            MAESTROS BARBEROS
+        </span>
+
+    </div>
+
+
+    <div class="stat">
+
+        <strong>
+            4.000+
+        </strong>
+
+        <span>
+            CLIENTES FELICES
+        </span>
+
+    </div>
+
+
+    <div class="stat">
+
+        <strong>
+            99.98%
+        </strong>
+
+        <span>
+            CALIFICACIONES
+        </span>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     SERVICIOS
+========================= -->
+
+<section
+    class="services"
+    id="servicios">
+
+    <div class="section-title">
+
+        <small>
+            NUESTROS SERVICIOS
+        </small>
+
+        <h2>
+            ELIGE TU ESTILO
+        </h2>
+
+        <p>
+            Todo lo que necesitas
+            para verte increíble.
+        </p>
+
+    </div>
+
+
+    <div class="cards">
+
+
+        <div class="card">
+
+            <div class="card-icon">
+                ✂️
+            </div>
+
+            <h3>
+                Corte Clásico
+            </h3>
+
+            <p>
+                Corte tradicional realizado
+                por nuestros maestros barberos.
+            </p>
+
+            <div class="price">
+                $25.000
+            </div>
+
+            <button
+                class="add-cart"
+                onclick="addToCart(
+                    'Corte Clásico',
+                    25000
+                )">
+
+                AGREGAR AL CARRITO
+
+            </button>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-icon">
+                🧔
+            </div>
+
+            <h3>
+                Barba Premium
+            </h3>
+
+            <p>
+                Perfilado, arreglo y tratamiento
+                completo para tu barba.
+            </p>
+
+            <div class="price">
+                $20.000
+            </div>
+
+            <button
+                class="add-cart"
+                onclick="addToCart(
+                    'Barba Premium',
+                    20000
+                )">
+
+                AGREGAR AL CARRITO
+
+            </button>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-icon">
+                🔥
+            </div>
+
+            <h3>
+                Combo Master
+            </h3>
+
+            <p>
+                Corte + barba + acabado premium
+                para una experiencia completa.
+            </p>
+
+            <div class="price">
+                $40.000
+            </div>
+
+            <button
+                class="add-cart"
+                onclick="addToCart(
+                    'Combo Master',
+                    40000
+                )">
+
+                AGREGAR AL CARRITO
+
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     BARBEROS
+========================= -->
+
+<section
+    class="barbers"
+    id="barberos">
+
+    <div class="section-title">
+
+        <small>
+            NUESTRO EQUIPO
+        </small>
+
+        <h2>
+            MAESTROS BARBEROS
+        </h2>
+
+        <p>
+            Profesionales dedicados
+            a tu estilo.
+        </p>
+
+    </div>
+
+
+    <div class="barber-grid">
+
+
+        <div class="barber">
+
+            <div class="barber-photo">
+                🧔🏻
+            </div>
+
+            <div class="barber-info">
+
+                <h3>
+                    Carlos
+                </h3>
+
+                <p>
+                    BARBER MASTER
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="barber">
+
+            <div class="barber-photo">
+                🧔🏽
+            </div>
+
+            <div class="barber-info">
+
+                <h3>
+                    Andrés
+                </h3>
+
+                <p>
+                    ESPECIALISTA EN BARBA
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="barber">
+
+            <div class="barber-photo">
+                🧔🏾
+            </div>
+
+            <div class="barber-info">
+
+                <h3>
+                    Santiago
+                </h3>
+
+                <p>
+                    FADE SPECIALIST
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     TIENDA
+========================= -->
+
+<section
+    class="shop"
+    id="tienda">
+
+    <div class="section-title">
+
+        <small>
+            BARBER SHOP
+        </small>
+
+        <h2>
+            PRODUCTOS
+        </h2>
+
+        <p>
+            Lleva tu estilo de barbería
+            a casa.
+        </p>
+
+    </div>
+
+
+    <div class="cards">
+
+
+        <div class="product">
+
+            <div class="product-img">
+                🧴
+            </div>
+
+            <h3>
+                Pomada Premium
+            </h3>
+
+            <div class="price">
+                $35.000
+            </div>
+
+            <button
+                class="add-cart"
+                onclick="addToCart(
+                    'Pomada Premium',
+                    35000
+                )">
+
+                AGREGAR
+
+            </button>
+
+        </div>
+
+
+        <div class="product">
+
+            <div class="product-img">
+                🪒
+            </div>
+
+            <h3>
+                Aceite para Barba
+            </h3>
+
+            <div class="price">
+                $28.000
+            </div>
+
+            <button
+                class="add-cart"
+                onclick="addToCart(
+                    'Aceite para Barba',
+                    28000
+                )">
+
+                AGREGAR
+
+            </button>
+
+        </div>
+
+
+        <div class="product">
+
+            <div class="product-img">
+                🧼
+            </div>
+
+            <h3>
+                Kit Barber
+            </h3>
+
+            <div class="price">
+                $60.000
+            </div>
+
+            <button
+                class="add-cart"
+                onclick="addToCart(
+                    'Kit Barber',
+                    60000
+                )">
+
+                AGREGAR
+
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     CONTACTO
+========================= -->
+
+<section
+    class="contact"
+    id="contacto">
+
+    <div class="contact-container">
+
+        <div class="section-title">
+
+            <small>
+                VISÍTANOS
+            </small>
+
+            <h2>
+                CONTACTO
+            </h2>
+
+        </div>
+
+
+        <p>
+
+            Estamos listos para darte
+            el mejor estilo.
+
+            Reserva tu cita o visítanos
+            directamente.
+
+        </p>
+
+
+        <div class="contact-info">
+
+
+            <div class="contact-item">
+
+                <strong>
+                    📍 DIRECCIÓN
+                </strong>
+
+                Carrera 50 #45-20
+
+            </div>
+
+
+            <div class="contact-item">
+
+                <strong>
+                    📞 TELÉFONO
+                </strong>
+
+                +57 3246706782
+
+            </div>
+
+
+            <div class="contact-item">
+
+                <strong>
+                    🕐 HORARIO
+                </strong>
+
+                Lunes - Sábado
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="btn btn-gold"
+            onclick="openReservation()">
+
+            RESERVAR MI CITA
+
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<footer>
+
+    <div>
+
+        © 2026
+
+        <strong>
+            BARBER MASTER
+        </strong>
+
+    </div>
+
+    <div>
+        HAIR & SHOP
+    </div>
+
+</footer>
+
+
+<!-- =========================
+     CARRITO
+========================= -->
+
+<div
+    class="cart-overlay"
+    id="cartOverlay"
+    onclick="closeCartOutside(event)">
+
+    <div class="cart">
+
+        <div class="cart-header">
+
+            <h2>
+                🛒 MI CARRITO
+            </h2>
+
+            <button
+                class="close-cart"
+                onclick="closeCart()">
+
+                ×
+
+            </button>
+
+        </div>
+
+
+        <div id="cartItems"></div>
+
+
+        <div class="cart-total">
+
+            <span>
+                Total
+            </span>
+
+            <strong id="cartTotal">
+                $0
+            </strong>
+
+        </div>
+
+
+        <button
+            class="checkout"
+            onclick="checkout()">
+
+            FINALIZAR COMPRA
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     MODAL RESERVACIÓN
+========================= -->
+
+<div
+    class="modal"
+    id="reservationModal">
+
+    <div class="modal-box">
+
+        <button
+            class="close-modal"
+            onclick="closeReservation()">
+
+            ×
+
+        </button>
+
+
+        <h2>
+            RESERVAR CITA
+        </h2>
+
+
+        <form id="reservationForm">
+
+
+            <div class="form-group">
+
+                <label>
+                    Nombre
+                </label>
+
+                <input
+                    type="text"
+                    id="clientName"
+                    placeholder="Tu nombre"
+                    required>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Teléfono
+                </label>
+
+                <input
+                    type="tel"
+                    id="clientPhone"
+                    placeholder="300 000 0000"
+                    required>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Servicio
+                </label>
+
+                <select
+                    id="service"
+                    required>
+
+                    <option value="">
+                        Selecciona un servicio
+                    </option>
+
+                    <option value="Corte Clásico">
+                        Corte Clásico
+                    </option>
+
+                    <option value="Barba Premium">
+                        Barba Premium
+                    </option>
+
+                    <option value="Combo Master">
+                        Combo Master
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    BARBERO
+                </label>
+
+                <select
+                    id="barbero"
+                    required>
+
+                    <option value="">
+                        Cargando barberos...
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Fecha
+                </label>
+
+                <input
+                    type="date"
+                    id="reservationDate"
+                    required>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Hora
+                </label>
+
+                <input
+                    type="time"
+                    id="reservationTime"
+                    required>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="submit-reservation">
+
+                CONFIRMAR RESERVA
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     NOTIFICACIÓN
+========================= -->
+
+<div id="notification">
+
+    <strong id="notificationTitle">
+        ¡Listo!
+    </strong>
+
+    <p id="notificationText">
+        Producto agregado.
+    </p>
+
+</div>
+
+
+<!-- =========================
+     SUPABASE
+========================= -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+<script>
+
+    /* =====================================
+       SUPABASE
+    ===================================== */
+
+    const SUPABASE_URL =
+        "https://nxfkpmjfopwdlblahlix.supabase.co";
+
+
+    const SUPABASE_KEY =
+        "sb_publishable_UpfXLFD4dPyhezCh8bQ7aQ_E0viD5zV";
+
+
+    const supabaseClient =
+        window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_KEY
+        );
+
+
+    /* =====================================
+       CARRITO
+    ===================================== */
+
+    let cart = [];
+
+
+    function addToCart(name, price) {
+
+        cart.push({
+            name: name,
+            price: price
+        });
+
+
+        updateCart();
+
+
+        showNotification(
+            "Producto agregado",
+            name + " fue agregado al carrito."
+        );
+
+    }
+
+
+    function updateCart() {
+
+        const cartItems =
+            document.getElementById(
+                "cartItems"
+            );
+
+
+        const cartCount =
+            document.getElementById(
+                "cartCount"
+            );
+
+
+        const cartTotal =
+            document.getElementById(
+                "cartTotal"
+            );
+
+
+        cartCount.textContent =
+            cart.length;
+
+
+        if (cart.length === 0) {
+
+            cartItems.innerHTML = `
+                <div class="empty-cart">
+                    🛒<br><br>
+                    Tu carrito está vacío.
+                </div>
+            `;
+
+
+            cartTotal.textContent =
+                "$0";
+
+
+            return;
+        }
+
+
+        let total = 0;
+
+
+        cartItems.innerHTML = "";
+
+
+        cart.forEach(
+            (item, index) => {
+
+                total += item.price;
+
+
+                const div =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                div.className =
+                    "cart-item";
+
+
+                div.innerHTML = `
+
+                    <div class="cart-item-info">
+
+                        <h4>
+                            ${item.name}
+                        </h4>
+
+                        <p>
+                            ${formatPrice(
+                                item.price
+                            )}
+                        </p>
+
+                    </div>
+
+                    <button
+                        class="remove"
+                        onclick="
+                            removeFromCart(
+                                ${index}
+                            )
+                        ">
+
+                        ELIMINAR
+
+                    </button>
+
+                `;
+
+
+                cartItems.appendChild(
+                    div
+                );
+
+            }
+        );
+
+
+        cartTotal.textContent =
+            formatPrice(total);
+
+    }
+
+
+    function removeFromCart(index) {
+
+        const product =
+            cart[index];
+
+
+        cart.splice(index, 1);
+
+
+        updateCart();
+
+
+        showNotification(
+            "Producto eliminado",
+            product.name +
+            " fue eliminado."
+        );
+
+    }
+
+
+    function formatPrice(price) {
+
+        return "$" +
+            price.toLocaleString(
+                "es-CO"
+            );
+
+    }
+
+
+    function openCart() {
+
+        document
+            .getElementById(
+                "cartOverlay"
+            )
+            .classList.add(
+                "active"
+            );
+
+
+        updateCart();
+
+    }
+
+
+    function closeCart() {
+
+        document
+            .getElementById(
+                "cartOverlay"
+            )
+            .classList.remove(
+                "active"
+            );
+
+    }
+
+
+    function closeCartOutside(event) {
+
+        if (
+            event.target.id ===
+            "cartOverlay"
+        ) {
+
+            closeCart();
+
+        }
+
+    }
+
+
+    function checkout() {
+
+        if (cart.length === 0) {
+
+            showNotification(
+                "Carrito vacío",
+                "Agrega algún producto primero."
+            );
+
+            return;
+        }
+
+
+        const total =
+            cart.reduce(
+                (sum, item) =>
+                    sum + item.price,
+                0
+            );
+
+
+        showNotification(
+            "¡Compra realizada!",
+            "Total: " +
+            formatPrice(total)
+        );
+
+
+        cart = [];
+
+
+        updateCart();
+
+
+        setTimeout(
+            () => {
+                closeCart();
+            },
+            1500
+        );
+
+    }
+
+
+    /* =====================================
+       NOTIFICACIONES
+    ===================================== */
+
+    let notificationTimer;
+
+
+    function showNotification(
+        title,
+        text
+    ) {
+
+        const notification =
+            document.getElementById(
+                "notification"
+            );
+
+
+        document.getElementById(
+            "notificationTitle"
+        ).textContent = title;
+
+
+        document.getElementById(
+            "notificationText"
+        ).textContent = text;
+
+
+        notification.classList.add(
+            "show"
+        );
+
+
+        clearTimeout(
+            notificationTimer
+        );
+
+
+        notificationTimer =
+            setTimeout(
+                () => {
+
+                    notification.classList.remove(
+                        "show"
+                    );
+
+                },
+                3500
+            );
+
+    }
+
+
+    /* =====================================
+       MODAL DE RESERVA
+    ===================================== */
+
+    function openReservation() {
+
+        document
+            .getElementById(
+                "reservationModal"
+            )
+            .classList.add(
+                "active"
+            );
+
+    }
+
+
+    function closeReservation() {
+
+        document
+            .getElementById(
+                "reservationModal"
+            )
+            .classList.remove(
+                "active"
+            );
+
+    }
+
+
+    /* =====================================
+       CARGAR BARBEROS DESDE SUPABASE
+    ===================================== */
+
+    async function cargarBarberos() {
+
+        const selector =
+            document.getElementById(
+                "barbero"
+            );
+
+
+        if (!selector) {
+
+            console.error(
+                "No existe #barbero"
+            );
+
+            return;
+
+        }
+
+
+        selector.innerHTML = `
+            <option value="">
+                Cargando barberos...
+            </option>
+        `;
+
+
+        const { data, error } =
+            await supabaseClient
+                .from("barberos")
+                .select(
+                    "id, nombre"
+                )
+                .eq(
+                    "activo",
+                    true
+                )
+                .order(
+                    "nombre"
+                );
+
+
+        if (error) {
+
+            console.error(
+                "Error cargando barberos:",
+                error
+            );
+
+
+            selector.innerHTML = `
+                <option value="">
+                    Error cargando barberos
+                </option>
+            `;
+
+
+            showNotification(
+                "Error",
+                "No se pudieron cargar los barberos."
+            );
+
+
+            return;
+
+        }
+
+
+        selector.innerHTML = `
+            <option value="">
+                Selecciona tu barbero
+            </option>
+        `;
+
+
+        if (
+            !data ||
+            data.length === 0
+        ) {
+
+            selector.innerHTML = `
+                <option value="">
+                    No hay barberos disponibles
+                </option>
+            `;
+
+            return;
+
+        }
+
+
+        data.forEach(
+            barbero => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+
+                option.value =
+                    barbero.id;
+
+
+                option.textContent =
+                    barbero.nombre;
+
+
+                selector.appendChild(
+                    option
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =====================================
+       GUARDAR RESERVA
+    ===================================== */
+
+    document
+        .getElementById(
+            "reservationForm"
+        )
+        .addEventListener(
+            "submit",
+            async function(event) {
+
+                event.preventDefault();
+
+
+                const name =
+                    document
+                        .getElementById(
+                            "clientName"
+                        )
+                        .value
+                        .trim();
+
+
+                const phone =
+                    document
+                        .getElementById(
+                            "clientPhone"
+                        )
+                        .value
+                        .trim();
+
+
+                const service =
+                    document
+                        .getElementById(
+                            "service"
+                        )
+                        .value;
+
+
+                const barber =
+                    document
+                        .getElementById(
+                            "barbero"
+                        )
+                        .value;
+
+
+                const date =
+                    document
+                        .getElementById(
+                            "reservationDate"
+                        )
+                        .value;
+
+
+                const time =
+                    document
+                        .getElementById(
+                            "reservationTime"
+                        )
+                        .value;
+
+
+                if (!name) {
+
+                    showNotification(
+                        "Falta información",
+                        "Escribe tu nombre."
+                    );
+
+                    return;
+
+                }
+
+
+                if (!phone) {
+
+                    showNotification(
+                        "Falta información",
+                        "Escribe tu teléfono."
+                    );
+
+                    return;
+
+                }
+
+
+                if (!service) {
+
+                    showNotification(
+                        "Falta información",
+                        "Selecciona un servicio."
+                    );
+
+                    return;
+
+                }
+
+
+                if (!barber) {
+
+                    showNotification(
+                        "Falta información",
+                        "Selecciona un barbero."
+                    );
+
+                    return;
+
+                }
+
+
+                if (!date) {
+
+                    showNotification(
+                        "Falta información",
+                        "Selecciona una fecha."
+                    );
+
+                    return;
+
+                }
+
+
+                if (!time) {
+
+                    showNotification(
+                        "Falta información",
+                        "Selecciona una hora."
+                    );
+
+                    return;
+
+                }
+
+
+                const button =
+                    this.querySelector(
+                        ".submit-reservation"
+                    );
+
+
+                button.disabled =
+                    true;
+
+
+                button.textContent =
+                    "GUARDANDO...";
+
+
+                try {
+
+                    const {
+                        data,
+                        error
+                    } =
+                        await supabaseClient
+                            .from("citas")
+                            .insert({
+
+                                cliente_nombre:
+                                    name,
+
+                                cliente_telefono:
+                                    phone,
+
+                                servicio:
+                                    service,
+
+                                barbero_id:
+                                    barber,
+
+                                fecha:
+                                    date,
+
+                                hora:
+                                    time,
+
+                                estado:
+                                    "pendiente"
+
+                            })
+                            .select();
+
+
+                    if (error) {
+
+                        console.error(
+                            "ERROR SUPABASE:",
+                            error
+                        );
+
+
+                        showNotification(
+                            "Error al reservar",
+                            error.message
+                        );
+
+
+                        return;
+
+                    }
+
+
+                    console.log(
+                        "CITA CREADA:",
+                        data
+                    );
+
+
+                    closeReservation();
+
+
+                    this.reset();
+
+
+                    showNotification(
+                        "¡Cita reservada!",
+                        "Tu reserva fue registrada correctamente."
+                    );
+
+                }
+
+                catch (error) {
+
+                    console.error(
+                        "ERROR:",
+                        error
+                    );
+
+
+                    showNotification(
+                        "Error",
+                        "Ocurrió un error inesperado."
+                    );
+
+                }
+
+                finally {
+
+                    button.disabled =
+                        false;
+
+
+                    button.textContent =
+                        "CONFIRMAR RESERVA";
+
+                }
+
+            }
+        );
+
+
+    /* =====================================
+       MENÚ MÓVIL
+    ===================================== */
+
+    function toggleMenu() {
+
+        document
+            .getElementById(
+                "navbar"
+            )
+            .classList.toggle(
+                "active"
+            );
+
+    }
+
+
+    function closeMenu() {
+
+        document
+            .getElementById(
+                "navbar"
+            )
+            .classList.remove(
+                "active"
+            );
+
+    }
+
+
+    /* =====================================
+       FECHA MÍNIMA
+    ===================================== */
+
+    function configurarFecha() {
+
+        const fecha =
+            document.getElementById(
+                "reservationDate"
+            );
+
+
+        const hoy =
+            new Date();
+
+
+        const year =
+            hoy.getFullYear();
+
+
+        const month =
+            String(
+                hoy.getMonth() + 1
+            ).padStart(
+                2,
+                "0"
+            );
+
+
+        const day =
+            String(
+                hoy.getDate()
+            ).padStart(
+                2,
+                "0"
+            );
+
+
+        fecha.min =
+            `${year}-${month}-${day}`;
+
+    }
+
+
+    /* =====================================
+       INICIO
+    ===================================== */
+
+    updateCart();
+
+    configurarFecha();
+
+    cargarBarberos();
+
+</script>
+
+
+</body>
+
+</html>

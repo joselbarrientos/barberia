@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>BARBER MASTER | Dashboard</title>
+
+    <!-- SUPABASE -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #090909;
+            color: white;
+        }
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        header {
+            background: #111;
+            border-bottom: 1px solid #333;
+            padding: 18px 40px;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: auto;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .logo span {
+            color: #d4af37;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .barber-name {
+            color: #d4af37;
+            font-weight: bold;
+        }
+
+        .logout {
+            background: transparent;
+            border: 1px solid #d4af37;
+            color: #d4af37;
+            padding: 9px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .logout:hover {
+            background: #d4af37;
+            color: black;
+        }
+
+        /* =========================
+           CONTENEDOR
+        ========================= */
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 35px 20px;
+        }
+
+        .welcome {
+            margin-bottom: 30px;
+        }
+
+        .welcome h1 {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .welcome h1 span {
+            color: #d4af37;
+        }
+
+        .welcome p {
+            color: #999;
+        }
+
+        /* =========================
+           TARJETAS
+        ========================= */
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 35px;
+        }
+
+        .card {
+            background: #151515;
+            border: 1px solid #302814;
+            border-radius: 12px;
+            padding: 25px;
+        }
+
+        .card-icon {
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            color: #999;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .card-value {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .money {
+            color: #d4af37;
+        }
+
+        /* =========================
+           CITAS
+        ========================= */
+
+        .appointments {
+            background: #151515;
+            border: 1px solid #302814;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .appointments-header {
+            padding: 20px;
+            border-bottom: 1px solid #302814;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .appointments-header h2 {
+            font-size: 20px;
+        }
+
+        .date {
+            color: #999;
+            font-size: 14px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            color: #999;
+            text-align: left;
+            padding: 16px 20px;
+            font-size: 12px;
+            border-bottom: 1px solid #333;
+        }
+
+        td {
+            padding: 17px 20px;
+            border-bottom: 1px solid #252525;
+        }
+
+        /* =========================
+           ESTADOS
+        ========================= */
+
+        .estado {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .pendiente {
+            background: #3c3217;
+            color: #e5c65a;
+        }
+
+        .atendida {
+            background: #173c22;
+            color: #70d388;
+        }
+
+        .cancelada {
+            background: #401d1d;
+            color: #ff7777;
+        }
+
+        /* =========================
+           BOTON
+        ========================= */
+
+        .btn-atendida {
+            border: none;
+            background: #d4af37;
+            color: #111;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 11px;
+        }
+
+        .btn-atendida:hover {
+            background: #f0ce55;
+        }
+
+        .sin-citas {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 900px) {
+
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 600px) {
+
+            header {
+                padding: 15px;
+            }
+
+            .container {
+                padding: 25px 12px;
+            }
+
+            .cards {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .card {
+                padding: 17px;
+            }
+
+            .card-value {
+                font-size: 21px;
+            }
+
+            .barber-name {
+                display: none;
+            }
+
+            table {
+                font-size: 13px;
+            }
+
+            th,
+            td {
+                padding: 12px 10px;
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- =========================
+     HEADER
+========================= -->
+
+<header>
+
+    <div class="header-content">
+
+        <div class="logo">
+            BARBER <span>MASTER</span>
+        </div>
+
+        <div class="user-info">
+
+            <span id="barberName" class="barber-name">
+                Barbero
+            </span>
+
+            <button class="logout" onclick="cerrarSesion()">
+                CERRAR SESIÓN
+            </button>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- =========================
+     CONTENIDO
+========================= -->
+
+<div class="container">
+
+    <div class="welcome">
+
+        <h1>
+            Hola, <span id="nombreBarbero">Barbero</span> 👋
+        </h1>
+
+        <p>
+            Este es el resumen de tu trabajo de hoy.
+        </p>
+
+    </div>
+
+
+    <!-- =========================
+         TARJETAS
+    ========================= -->
+
+    <div class="cards">
+
+        <div class="card">
+
+            <div class="card-icon">
+                💰
+            </div>
+
+            <div class="card-title">
+                DINERO DEL DÍA
+            </div>
+
+            <div id="dineroDia" class="card-value money">
+                $0
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-icon">
+                ✂️
+            </div>
+
+            <div class="card-title">
+                SERVICIOS REALIZADOS
+            </div>
+
+            <div id="serviciosRealizados" class="card-value">
+                0
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-icon">
+                📅
+            </div>
+
+            <div class="card-title">
+                CITAS DE HOY
+            </div>
+
+            <div id="citasHoy" class="card-value">
+                0
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-icon">
+                ⏳
+            </div>
+
+            <div class="card-title">
+                PENDIENTES
+            </div>
+
+            <div id="pendientes" class="card-value">
+                0
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         TABLA DE CITAS
+    ========================= -->
+
+    <div class="appointments">
+
+        <div class="appointments-header">
+
+            <h2>
+                Mis citas de hoy
+            </h2>
+
+            <span id="fechaActual" class="date"></span>
+
+        </div>
+
+
+        <div id="tablaContainer">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            HORA
+                        </th>
+
+                        <th>
+                            CLIENTE
+                        </th>
+
+                        <th>
+                            SERVICIO
+                        </th>
+
+                        <th>
+                            VALOR
+                        </th>
+
+                        <th>
+                            ESTADO
+                        </th>
+
+                        <th>
+                            ACCIÓN
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="tablaCitas">
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <div id="sinCitas" class="sin-citas" style="display:none;">
+            No tienes citas para hoy.
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   CONEXIÓN CON SUPABASE
+===================================================== */
+
+const SUPABASE_URL =
+    "https://nxfkpmjfopwdlblahlix.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable_UpfXLFD4dPyhezCh8bQ7aQ_E0viD5zV";
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+/* =====================================================
+   PRECIOS DE LOS SERVICIOS
+===================================================== */
+
+const precios = {
+
+    "Corte Clásico": 25000,
+
+    "Barba Premium": 20000,
+
+    "Combo Master": 40000
+
+};
+
+
+/* =====================================================
+   FORMATO DE DINERO
+===================================================== */
+
+function formatoDinero(valor) {
+
+    return new Intl.NumberFormat(
+        "es-CO",
+        {
+            style: "currency",
+            currency: "COP",
+            maximumFractionDigits: 0
+        }
+    ).format(valor);
+
+}
+
+
+/* =====================================================
+   FECHA DE HOY
+===================================================== */
+
+function obtenerFechaHoy() {
+
+    const fecha = new Date();
+
+    const año = fecha.getFullYear();
+
+    const mes = String(
+        fecha.getMonth() + 1
+    ).padStart(2, "0");
+
+    const dia = String(
+        fecha.getDate()
+    ).padStart(2, "0");
+
+    return `${año}-${mes}-${dia}`;
+
+}
+
+
+/* =====================================================
+   INICIAR DASHBOARD
+===================================================== */
+
+async function iniciarDashboard() {
+
+    /* Revisar usuario */
+
+    const {
+        data: {
+            session
+        }
+    } = await supabaseClient.auth.getSession();
+
+
+    /* Si no inició sesión */
+
+    if (!session) {
+
+        window.location.href = "login.html";
+
+        return;
+
+    }
+
+
+    /*
+       El barbero_id se guarda en
+       User Metadata de Supabase.
+    */
+
+    const barberId =
+        session.user.user_metadata?.barbero_id;
+
+
+    if (!barberId) {
+
+        alert(
+            "Esta cuenta no está asociada a un barbero."
+        );
+
+        return;
+
+    }
+
+
+    /* Mostrar correo si se necesita */
+
+    console.log(
+        "Usuario:",
+        session.user.email
+    );
+
+    console.log(
+        "Barbero ID:",
+        barberId
+    );
+
+
+    /* =================================================
+       BUSCAR BARBERO
+    ================================================= */
+
+    const {
+        data: barbero,
+        error: errorBarbero
+    } = await supabaseClient
+        .from("barberos")
+        .select("id,nombre")
+        .eq("id", barberId)
+        .maybeSingle();
+
+
+    if (errorBarbero) {
+
+        console.error(errorBarbero);
+
+        alert(
+            "No se pudo cargar la información del barbero."
+        );
+
+        return;
+
+    }
+
+
+    if (barbero) {
+
+        document.getElementById(
+            "barberName"
+        ).textContent = barbero.nombre;
+
+        document.getElementById(
+            "nombreBarbero"
+        ).textContent = barbero.nombre;
+
+    }
+
+
+    /* =================================================
+       FECHA
+    ================================================= */
+
+    const hoy = obtenerFechaHoy();
+
+    document.getElementById(
+        "fechaActual"
+    ).textContent =
+        new Intl.DateTimeFormat(
+            "es-CO",
+            {
+                dateStyle: "full"
+            }
+        ).format(new Date());
+
+
+    /* =================================================
+       BUSCAR CITAS
+    ================================================= */
+
+    const {
+        data: citas,
+        error: errorCitas
+    } = await supabaseClient
+        .from("citas")
+        .select("*")
+        .eq("barbero_id", barberId)
+        .eq("fecha", hoy)
+        .order("hora", {
+            ascending: true
+        });
+
+
+    if (errorCitas) {
+
+        console.error(errorCitas);
+
+        alert(
+            "No se pudieron cargar las citas."
+        );
+
+        return;
+
+    }
+
+
+    mostrarDashboard(citas || []);
+
+}
+
+
+/* =====================================================
+   MOSTRAR INFORMACIÓN
+===================================================== */
+
+function mostrarDashboard(citas) {
+
+
+    /* Total de citas */
+
+    document.getElementById(
+        "citasHoy"
+    ).textContent = citas.length;
+
+
+    /* Citas atendidas */
+
+    const atendidas =
+        citas.filter(
+            cita =>
+                String(
+                    cita.estado
+                ).toLowerCase() === "atendida"
+        );
+
+
+    /* Citas pendientes */
+
+    const pendientes =
+        citas.filter(
+            cita =>
+                String(
+                    cita.estado
+                ).toLowerCase() === "pendiente"
+        );
+
+
+    document.getElementById(
+        "serviciosRealizados"
+    ).textContent = atendidas.length;
+
+
+    document.getElementById(
+        "pendientes"
+    ).textContent = pendientes.length;
+
+
+    /* =================================================
+       CALCULAR DINERO
+    ================================================= */
+
+    let dinero = 0;
+
+
+    atendidas.forEach(cita => {
+
+        const precio =
+            precios[cita.servicio] || 0;
+
+        dinero += precio;
+
+    });
+
+
+    document.getElementById(
+        "dineroDia"
+    ).textContent =
+        formatoDinero(dinero);
+
+
+    /* =================================================
+       TABLA
+    ================================================= */
+
+    const tabla =
+        document.getElementById(
+            "tablaCitas"
+        );
+
+
+    tabla.innerHTML = "";
+
+
+    if (citas.length === 0) {
+
+        document.getElementById(
+            "tablaContainer"
+        ).style.display = "none";
+
+        document.getElementById(
+            "sinCitas"
+        ).style.display = "block";
+
+        return;
+
+    }
+
+
+    document.getElementById(
+        "tablaContainer"
+    ).style.display = "block";
+
+    document.getElementById(
+        "sinCitas"
+    ).style.display = "none";
+
+
+    /* =================================================
+       CREAR FILAS
+    ================================================= */
+
+    citas.forEach(cita => {
+
+        const fila =
+            document.createElement("tr");
+
+
+        const precio =
+            precios[cita.servicio] || 0;
+
+
+        const estado =
+            String(
+                cita.estado || "pendiente"
+            ).toLowerCase();
+
+
+        let claseEstado =
+            "pendiente";
+
+
+        if (estado === "atendida") {
+
+            claseEstado = "atendida";
+
+        }
+
+        if (estado === "cancelada") {
+
+            claseEstado = "cancelada";
+
+        }
+
+
+        let boton = "—";
+
+
+        if (estado === "pendiente") {
+
+            boton = `
+                <button
+                    class="btn-atendida"
+                    onclick="marcarAtendida('${cita.id}')"
+                >
+                    MARCAR ATENDIDA
+                </button>
+            `;
+
+        }
+
+
+        fila.innerHTML = `
+
+            <td>
+                ${cita.hora || "-"}
+            </td>
+
+            <td>
+                ${cita.cliente_nombre || "-"}
+            </td>
+
+            <td>
+                ${cita.servicio || "-"}
+            </td>
+
+            <td>
+                ${formatoDinero(precio)}
+            </td>
+
+            <td>
+
+                <span
+                    class="estado ${claseEstado}"
+                >
+                    ${cita.estado || "pendiente"}
+                </span>
+
+            </td>
+
+            <td>
+                ${boton}
+            </td>
+
+        `;
+
+
+        tabla.appendChild(fila);
+
+    });
+
+}
+
+
+/* =====================================================
+   MARCAR CITA COMO ATENDIDA
+===================================================== */
+
+async function marcarAtendida(id) {
+
+    const confirmar =
+        confirm(
+            "¿Deseas marcar esta cita como atendida?"
+        );
+
+
+    if (!confirmar) {
+
+        return;
+
+    }
+
+
+    /*
+       Se utiliza la función RPC de Supabase
+       para actualizar únicamente la cita
+       perteneciente al barbero.
+    */
+
+    const {
+        error
+    } = await supabaseClient
+        .rpc(
+            "marcar_cita_atendida",
+            {
+                p_cita_id: String(id)
+            }
+        );
+
+
+    if (error) {
+
+        console.error(error);
+
+        alert(
+            "No se pudo actualizar la cita: " +
+            error.message
+        );
+
+        return;
+
+    }
+
+
+    alert(
+        "Cita marcada como atendida."
+    );
+
+
+    /* Recargar dashboard */
+
+    iniciarDashboard();
+
+}
+
+
+/* =====================================================
+   CERRAR SESIÓN
+===================================================== */
+
+async function cerrarSesion() {
+
+    await supabaseClient.auth.signOut();
+
+    window.location.href =
+        "login.html";
+
+}
+
+
+/* =====================================================
+   INICIAR
+===================================================== */
+
+iniciarDashboard();
+
+</script>
+
+</body>
+</html>
