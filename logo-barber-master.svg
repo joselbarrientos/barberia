@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 132" role="img" aria-labelledby="title">
+  <title id="title">Barber Master — Hair &amp; Shop</title>
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f5dc83"/>
+      <stop offset=".52" stop-color="#d5ad3d"/>
+      <stop offset="1" stop-color="#a87919"/>
+    </linearGradient>
+    <linearGradient id="blade" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff0b4"/>
+      <stop offset="1" stop-color="#d5ad3d"/>
+    </linearGradient>
+  </defs>
+
+  <g transform="translate(8 6)">
+    <path d="M60 2 110 20v39c0 31-20 52-50 65C30 111 10 90 10 59V20L60 2Z"
+          fill="#11100f" stroke="url(#gold)" stroke-width="3"/>
+    <path d="M60 10 102 25v34c0 25-15 43-42 55C33 102 18 84 18 59V25L60 10Z"
+          fill="none" stroke="#d5ad3d" stroke-opacity=".35" stroke-width="1.5"/>
+    <path d="M29 31h18c12 0 18 6 18 15 0 7-4 11-10 13 8 2 13 7 13 16 0 11-8 18-21 18H29V31Zm14 23c6 0 9-2 9-7s-3-7-9-7h-2v14h2Zm2 28c7 0 10-3 10-8s-3-8-10-8h-4v16h4Z"
+          fill="url(#gold)"/>
+    <path d="M70 93V31h14l13 34V31h13v62H96L83 60v33H70Z"
+          fill="#f6f1e5"/>
+    <path d="M24 101 96 20" fill="none" stroke="url(#blade)" stroke-width="2" stroke-linecap="round" opacity=".78"/>
+    <circle cx="25" cy="101" r="3" fill="#f5dc83"/>
+    <path d="M23 106h74" stroke="#d5ad3d" stroke-width="1" opacity=".6"/>
+  </g>
+
+  <path d="M139 28v76" stroke="#d5ad3d" stroke-width="1.5" opacity=".65"/>
+  <text x="160" y="66" fill="#f4f0e8"
+        font-family="Arial, Helvetica, sans-serif" font-size="37"
+        font-weight="800" letter-spacing="3">BARBER</text>
+  <text x="160" y="106" fill="url(#gold)"
+        font-family="Arial, Helvetica, sans-serif" font-size="37"
+        font-weight="800" letter-spacing="5">MASTER</text>
+  <path d="M426 91h76" stroke="#d5ad3d" stroke-width="1" opacity=".7"/>
+  <text x="427" y="108" fill="#d7d1c4"
+        font-family="Arial, Helvetica, sans-serif" font-size="9"
+        letter-spacing="3">HAIR &amp; SHOP</text>
+</svg>
