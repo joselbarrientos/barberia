@@ -319,6 +319,73 @@
             color: #ff7777;
         }
 
+        .weekly-agenda {
+            margin-bottom: 35px;
+            padding: 22px;
+            background: #151515;
+            border: 1px solid #302814;
+            border-radius: 12px;
+        }
+
+        .weekly-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .weekly-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #d4af37;
+        }
+
+        .weekly-controls button {
+            padding: 7px 11px;
+            color: #d4af37;
+            background: transparent;
+            border: 1px solid #d4af37;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .week-grid {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(120px, 1fr));
+            gap: 10px;
+            overflow-x: auto;
+        }
+
+        .week-day {
+            min-height: 125px;
+            padding: 12px;
+            background: #0d0d0d;
+            border: 1px solid #302814;
+            border-radius: 8px;
+        }
+
+        .week-day h3 {
+            margin-bottom: 10px;
+            color: #d4af37;
+            font-size: 13px;
+        }
+
+        .week-appointment {
+            margin-top: 7px;
+            padding: 8px;
+            background: #1b1917;
+            border-left: 2px solid #d4af37;
+            font-size: 12px;
+        }
+
+        .week-appointment a {
+            display: inline-block;
+            margin-top: 5px;
+            color: #78d68a;
+        }
+
         /* =========================
            RESPONSIVE
         ========================= */
@@ -356,6 +423,11 @@
 
             .walk-in-form {
                 grid-template-columns: 1fr;
+            }
+
+            .weekly-header {
+                align-items: flex-start;
+                flex-direction: column;
             }
 
             .barber-name {
@@ -567,6 +639,19 @@
 
     </section>
 
+    <section class="weekly-agenda">
+        <div class="weekly-header">
+            <div>
+                <h2>Agenda semanal</h2>
+                <span id="weekRange" class="date"></span>
+            </div>
+            <div class="weekly-controls">
+                <button type="button" onclick="cambiarSemana(-1)" aria-label="Semana anterior">&lt;</button>
+                <button type="button" onclick="cambiarSemana(1)" aria-label="Semana siguiente">&gt;</button>
+            </div>
+        </div>
+        <div id="weekGrid" class="week-grid" aria-live="polite"></div>
+    </section>
 
     <!-- =========================
          TABLA DE CITAS
@@ -862,6 +947,117 @@ function obtenerFechaHoy() {
 
 }
 
+let fechaReferenciaAgenda = new Date();
+
+
+function fechaIsoLocal(fecha) {
+    const año = fecha.getFullYear();
+    const mes = String(fecha.getMonth() + 1).padStart(2, "0");
+    const dia = String(fecha.getDate()).padStart(2, "0");
+    return `${año}-${mes}-${dia}`;
+}
+
+
+function cambiarSemana(cantidad) {
+    fechaReferenciaAgenda.setDate(
+        fechaReferenciaAgenda.getDate() + cantidad * 7
+    );
+    cargarAgendaSemanal();
+}
+
+
+async function cargarAgendaSemanal() {
+    const grid = document.getElementById("weekGrid");
+    if (!barberActualId) return;
+
+    const monday = new Date(
+        fechaReferenciaAgenda.getFullYear(),
+        fechaReferenciaAgenda.getMonth(),
+        fechaReferenciaAgenda.getDate()
+    );
+    const offset = (monday.getDay() + 6) % 7;
+    monday.setDate(monday.getDate() - offset);
+
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+
+    const start = fechaIsoLocal(monday);
+    const end = fechaIsoLocal(sunday);
+    document.getElementById("weekRange").textContent =
+        `${monday.toLocaleDateString("es-CO")} – ${sunday.toLocaleDateString("es-CO")}`;
+    grid.textContent = "Cargando agenda...";
+
+    const { data, error } = await supabaseClient
+        .from("citas")
+        .select("id,fecha,hora,cliente_nombre,cliente_telefono,servicio,estado")
+        .eq("barbero_id", barberActualId)
+        .gte("fecha", start)
+        .lte("fecha", end)
+        .neq("estado", "cancelada")
+        .order("fecha")
+        .order("hora");
+
+    if (error) {
+        console.error("No se pudo cargar la agenda semanal:", error);
+        grid.textContent = "No se pudo cargar la agenda semanal.";
+        return;
+    }
+
+    grid.replaceChildren();
+    for (let dayIndex = 0; dayIndex < 7; dayIndex += 1) {
+        const date = new Date(monday);
+        date.setDate(monday.getDate() + dayIndex);
+        const dateIso = fechaIsoLocal(date);
+        const dayPanel = document.createElement("article");
+        dayPanel.className = "week-day";
+        const heading = document.createElement("h3");
+        heading.textContent = date.toLocaleDateString("es-CO", {
+            weekday: "short",
+            day: "numeric",
+            month: "short"
+        });
+        dayPanel.appendChild(heading);
+
+        const dayAppointments = (data || []).filter(cita => cita.fecha === dateIso);
+        if (dayAppointments.length === 0) {
+            const empty = document.createElement("p");
+            empty.className = "date";
+            empty.textContent = "Sin citas";
+            dayPanel.appendChild(empty);
+        }
+
+        dayAppointments.forEach(cita => {
+            const item = document.createElement("div");
+            item.className = "week-appointment";
+            const time = document.createElement("strong");
+            time.textContent = String(cita.hora).slice(0, 5);
+            const client = document.createElement("p");
+            client.textContent = cita.cliente_nombre || "Cliente";
+            const service = document.createElement("p");
+            service.textContent = cita.servicio || "";
+            item.append(time, client, service);
+
+            if (cita.cliente_telefono) {
+                const digits = String(cita.cliente_telefono).replace(/\D/g, "");
+                const phone = digits.length === 10 ? `57${digits}` : digits;
+                const reminder = document.createElement("a");
+                reminder.target = "_blank";
+                reminder.rel = "noopener";
+                reminder.textContent = "Enviar recordatorio";
+                reminder.href =
+                    `https://wa.me/${phone}?text=${encodeURIComponent(
+                        `Hola ${cita.cliente_nombre}, te recordamos tu cita en Barber Master el ${date.toLocaleDateString("es-CO")} a las ${String(cita.hora).slice(0, 5)} para ${cita.servicio}.`
+                    )}`;
+                item.appendChild(reminder);
+            }
+
+            dayPanel.appendChild(item);
+        });
+
+        grid.appendChild(dayPanel);
+    }
+}
+
 
 /* =====================================================
    INICIAR DASHBOARD
@@ -1020,6 +1216,7 @@ async function iniciarDashboard() {
 
 
     mostrarDashboard(citas || []);
+    await cargarAgendaSemanal();
 
 }
 

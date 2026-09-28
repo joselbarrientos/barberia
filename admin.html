@@ -13,7 +13,7 @@
             font-family: Arial, Helvetica, sans-serif;
         }
         .panel {
-            width: min(100%, 520px); margin: 40px auto; padding: 32px;
+            width: min(100%, 1000px); margin: 40px auto; padding: 32px;
             background: var(--panel); border: 1px solid rgba(213,173,61,.35);
             border-radius: 12px;
         }
@@ -33,6 +33,42 @@
         .success { color: #78d68a; }
         .error { color: #f28b82; }
         a { display: inline-block; margin-top: 20px; color: var(--gold); }
+        .admin-section { margin-top: 34px; padding-top: 25px; border-top: 1px solid #403722; }
+        .product-form, .product-row {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+        .product-form label, .product-row label { margin: 8px 0 0; color: #ccc; }
+        textarea, select {
+            width: 100%; padding: 12px; color: white; background: #111;
+            border: 1px solid #444; border-radius: 6px; font-size: 15px;
+        }
+        textarea { min-height: 75px; resize: vertical; }
+        input[type="file"] { padding: 8px; }
+        .product-image-preview {
+            width: 96px; height: 72px; margin-top: 8px;
+            object-fit: cover; border: 1px solid #403722; border-radius: 6px;
+        }
+        .image-help { display: block; margin-top: 5px; color: #999; font-size: 12px; }
+        .product-list { display: grid; gap: 16px; margin-top: 20px; }
+        .product-row {
+            padding: 16px; border: 1px solid #403722; border-radius: 8px;
+        }
+        .product-row button, .product-form button { grid-column: 1 / -1; }
+        .product-row .active-field { display: flex; align-items: center; gap: 10px; }
+        .active-field input { width: auto; }
+        .review-admin-list { display: grid; gap: 12px; margin-top: 18px; }
+        .review-admin-item { padding: 16px; border: 1px solid #403722; border-radius: 8px; }
+        .review-admin-item button { width: auto; margin-right: 10px; padding: 9px 12px; }
+        .sales-admin-list { display: grid; gap: 12px; margin-top: 18px; }
+        .sales-admin-item { padding: 16px; border: 1px solid #403722; border-radius: 8px; }
+        .sales-admin-item button { width: auto; margin: 8px 10px 0 0; padding: 9px 12px; }
+        .sales-order-meta { color: #ccc; font-size: 13px; overflow-wrap: anywhere; }
+        .sales-order-items { padding-left: 20px; }
+        @media (max-width: 650px) {
+            .product-form, .product-row { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -55,6 +91,42 @@
         </form>
 
         <a href="dashboard.html">Volver al dashboard</a>
+
+        <section id="productAdmin" class="admin-section" style="display:none;">
+            <h2>Inventario de tienda</h2>
+            <p>Administra productos, precios, categorías, imágenes y existencias. Puedes subir imágenes JPG, PNG o WebP de hasta 5 MB.</p>
+            <form id="productForm" class="product-form">
+                <label>Nombre<input id="productName" required maxlength="100"></label>
+                <label>Categoría
+                    <select id="productCategory" required>
+                        <option value="Cabello">Cabello</option>
+                        <option value="Barba">Barba</option>
+                        <option value="Kits">Kits</option>
+                    </select>
+                </label>
+                <label>Descripción<textarea id="productDescription" required maxlength="500"></textarea></label>
+                <label>Precio (COP)<input id="productPrice" type="number" min="0" step="1000" required></label>
+                <label for="productImage">Imagen del producto<input id="productImage" type="file" accept="image/jpeg,image/png,image/webp" required></label>
+                <label>Unidades en inventario<input id="productStock" type="number" min="0" step="1" required></label>
+                <button id="productSubmit" type="submit">AGREGAR PRODUCTO</button>
+            </form>
+            <p id="productMessage" role="alert"></p>
+            <div id="productList" class="product-list"></div>
+        </section>
+
+        <section id="reviewAdmin" class="admin-section" style="display:none;">
+            <h2>Moderación de reseñas</h2>
+            <p>Aprueba las opiniones para mostrarlas públicamente o escóndelas.</p>
+            <p id="reviewAdminMessage" role="alert"></p>
+            <div id="reviewAdminList" class="review-admin-list"></div>
+        </section>
+
+        <section id="salesAdmin" class="admin-section" style="display:none;">
+            <h2>Pedidos y ventas de tienda</h2>
+            <p>Confirma la venta después de verificar el pago o la entrega. El stock se descuenta una sola vez al confirmar.</p>
+            <p id="salesAdminMessage" role="alert"></p>
+            <div id="salesAdminList" class="sales-admin-list"></div>
+        </section>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -65,6 +137,342 @@
         const form = document.getElementById("employeeForm");
         const button = document.getElementById("submitButton");
         const message = document.getElementById("message");
+        const productAdmin = document.getElementById("productAdmin");
+        const reviewAdmin = document.getElementById("reviewAdmin");
+        const salesAdmin = document.getElementById("salesAdmin");
+
+        function productField(labelText, value, type = "text") {
+            const label = document.createElement("label");
+            label.textContent = labelText;
+            const input = type === "textarea"
+                ? document.createElement("textarea")
+                : document.createElement("input");
+            if (type !== "textarea") input.type = type;
+            input.value = value ?? "";
+            label.appendChild(input);
+            return { label, input };
+        }
+
+        function formatPrice(price) {
+            return new Intl.NumberFormat("es-CO", {
+                style: "currency",
+                currency: "COP",
+                maximumFractionDigits: 0
+            }).format(Number(price) || 0);
+        }
+
+        const MAX_PRODUCT_IMAGE_SIZE = 5 * 1024 * 1024;
+        const PRODUCT_IMAGE_EXTENSIONS = {
+            "image/jpeg": "jpg",
+            "image/png": "png",
+            "image/webp": "webp"
+        };
+
+        function validarImagenProducto(file) {
+            if (!file) {
+                throw new Error("Selecciona una imagen para el producto.");
+            }
+            if (!PRODUCT_IMAGE_EXTENSIONS[file.type]) {
+                throw new Error("El formato debe ser JPG, PNG o WebP.");
+            }
+            if (file.size > MAX_PRODUCT_IMAGE_SIZE) {
+                throw new Error("La imagen no puede superar los 5 MB.");
+            }
+        }
+
+        async function subirImagenProducto(file) {
+            validarImagenProducto(file);
+            const extension = PRODUCT_IMAGE_EXTENSIONS[file.type];
+            const path = `${crypto.randomUUID()}.${extension}`;
+            const { error } = await supabaseClient.storage
+                .from("product-images")
+                .upload(path, file, {
+                    cacheControl: "3600",
+                    contentType: file.type,
+                    upsert: false
+                });
+
+            if (error) {
+                throw new Error(`No se pudo subir la imagen: ${error.message}`);
+            }
+
+            const { data } = supabaseClient.storage
+                .from("product-images")
+                .getPublicUrl(path);
+            return { path, url: data.publicUrl };
+        }
+
+        async function eliminarImagenSubida(path) {
+            const { error } = await supabaseClient.storage
+                .from("product-images")
+                .remove([path]);
+            if (error) {
+                console.error("No se pudo limpiar la imagen cargada:", error);
+            }
+        }
+
+        async function cargarProductosAdmin() {
+            const list = document.getElementById("productList");
+            const { data, error } = await supabaseClient
+                .from("productos")
+                .select("id,nombre,categoria,descripcion,precio,imagen_url,stock,activo")
+                .order("nombre");
+
+            if (error) {
+                document.getElementById("productMessage").textContent = error.message;
+                document.getElementById("productMessage").className = "error";
+                return;
+            }
+
+            list.replaceChildren();
+            data.forEach(product => {
+                const row = document.createElement("form");
+                row.className = "product-row";
+                const name = productField("Nombre", product.nombre);
+                const category = productField("Categoría", product.categoria);
+                const description = productField("Descripción", product.descripcion, "textarea");
+                const price = productField("Precio", product.precio, "number");
+                const imageLabel = document.createElement("label");
+                imageLabel.textContent = "Cambiar imagen (opcional)";
+                const image = document.createElement("input");
+                image.type = "file";
+                image.accept = "image/jpeg,image/png,image/webp";
+                imageLabel.appendChild(image);
+                const imageHelp = document.createElement("span");
+                imageHelp.className = "image-help";
+                imageHelp.textContent = "Si no eliges otra imagen, se conserva la actual.";
+                imageLabel.appendChild(imageHelp);
+                const imagePreview = document.createElement("img");
+                imagePreview.className = "product-image-preview";
+                imagePreview.src = product.imagen_url;
+                imagePreview.alt = `Imagen actual de ${product.nombre}`;
+                imagePreview.onerror = () => {
+                    imagePreview.hidden = true;
+                };
+                imageLabel.appendChild(imagePreview);
+                image.addEventListener("change", () => {
+                    const file = image.files?.[0];
+                    if (!file) {
+                        imagePreview.src = product.imagen_url;
+                        imagePreview.hidden = false;
+                        return;
+                    }
+                    try {
+                        validarImagenProducto(file);
+                        imagePreview.src = URL.createObjectURL(file);
+                        imagePreview.hidden = false;
+                    } catch (error) {
+                        image.value = "";
+                        document.getElementById("productMessage").textContent = error.message;
+                        document.getElementById("productMessage").className = "error";
+                    }
+                });
+                const stock = productField("Stock", product.stock, "number");
+                price.input.min = "0";
+                stock.input.min = "0";
+                const activeLabel = document.createElement("label");
+                activeLabel.className = "active-field";
+                const active = document.createElement("input");
+                active.type = "checkbox";
+                active.checked = product.activo;
+                activeLabel.append(active, document.createTextNode("Visible en la tienda"));
+                const save = document.createElement("button");
+                save.type = "submit";
+                save.textContent = "GUARDAR CAMBIOS";
+                row.append(name.label, category.label, description.label, price.label,
+                    imageLabel, stock.label, activeLabel, save);
+                row.addEventListener("submit", async event => {
+                    event.preventDefault();
+                    save.disabled = true;
+                    const productMessage = document.getElementById("productMessage");
+                    let uploadedPath = null;
+                    try {
+                        let imageUrl = product.imagen_url;
+                        const file = image.files?.[0];
+                        if (file) {
+                            const uploadedImage = await subirImagenProducto(file);
+                            imageUrl = uploadedImage.url;
+                            uploadedPath = uploadedImage.path;
+                        }
+
+                        const { error: updateError } = await supabaseClient
+                            .from("productos")
+                            .update({
+                                nombre: name.input.value.trim(),
+                                categoria: category.input.value.trim(),
+                                descripcion: description.input.value.trim(),
+                                precio: Number(price.input.value),
+                                imagen_url: imageUrl,
+                                stock: Number(stock.input.value),
+                                activo: active.checked,
+                                updated_at: new Date().toISOString()
+                            })
+                            .eq("id", product.id);
+
+                        if (updateError) {
+                            if (uploadedPath) await eliminarImagenSubida(uploadedPath);
+                            throw new Error(updateError.message);
+                        }
+
+                        productMessage.textContent = "Producto actualizado.";
+                        productMessage.className = "success";
+                        await cargarProductosAdmin();
+                    } catch (error) {
+                        productMessage.textContent =
+                            error instanceof Error ? error.message : "No se pudo actualizar el producto.";
+                        productMessage.className = "error";
+                    } finally {
+                        save.disabled = false;
+                    }
+                });
+                list.appendChild(row);
+            });
+        }
+
+        async function cargarResenasAdmin() {
+            const list = document.getElementById("reviewAdminList");
+            const { data, error } = await supabaseClient
+                .from("resenas")
+                .select("id,cliente_nombre,calificacion,comentario,aprobada,created_at")
+                .order("created_at", { ascending: false });
+            if (error) {
+                document.getElementById("reviewAdminMessage").textContent = error.message;
+                return;
+            }
+
+            list.replaceChildren();
+            if (!data.length) {
+                list.textContent = "Todavía no hay reseñas.";
+                return;
+            }
+
+            data.forEach(review => {
+                const card = document.createElement("article");
+                card.className = "review-admin-item";
+                const title = document.createElement("strong");
+                title.textContent = `${review.cliente_nombre} · ${review.calificacion}/5`;
+                const comment = document.createElement("p");
+                comment.textContent = review.comentario || "Sin comentario.";
+                const status = document.createElement("p");
+                status.textContent = review.aprobada ? "Visible" : "Pendiente de aprobación";
+                const button = document.createElement("button");
+                button.type = "button";
+                button.textContent = review.aprobada ? "OCULTAR" : "APROBAR";
+                button.addEventListener("click", async () => {
+                    button.disabled = true;
+                    const { error: updateError } = await supabaseClient
+                        .from("resenas")
+                        .update({ aprobada: !review.aprobada })
+                        .eq("id", review.id);
+                    if (updateError) {
+                        document.getElementById("reviewAdminMessage").textContent =
+                            updateError.message;
+                        button.disabled = false;
+                        return;
+                    }
+                    await cargarResenasAdmin();
+                });
+                card.append(title, comment, status, button);
+                list.appendChild(card);
+            });
+        }
+
+        async function cargarPedidosAdmin() {
+            const list = document.getElementById("salesAdminList");
+            const message = document.getElementById("salesAdminMessage");
+            const { data, error } = await supabaseClient
+                .from("pedidos_tienda")
+                .select("id,cliente_nombre,cliente_telefono,total,estado,created_at,pedido_detalles(producto_nombre,cantidad,precio_unitario)")
+                .order("created_at", { ascending: false })
+                .limit(50);
+
+            if (error) {
+                message.textContent = error.message;
+                return;
+            }
+
+            message.textContent = "";
+            list.replaceChildren();
+            if (!data?.length) {
+                list.textContent = "Todavía no hay pedidos de tienda.";
+                return;
+            }
+
+            data.forEach(pedido => {
+                const card = document.createElement("article");
+                card.className = "sales-admin-item";
+                const title = document.createElement("strong");
+                title.textContent =
+                    `${pedido.cliente_nombre} · ${pedido.estado.toUpperCase()}`;
+
+                const meta = document.createElement("p");
+                meta.className = "sales-order-meta";
+                meta.textContent = [
+                    `Pedido: ${pedido.id}`,
+                    pedido.cliente_telefono ? `Teléfono: ${pedido.cliente_telefono}` : "",
+                    `Fecha: ${new Date(pedido.created_at).toLocaleString("es-CO")}`,
+                    `Total: ${formatPrice(Number(pedido.total))}`
+                ].filter(Boolean).join(" · ");
+
+                const items = document.createElement("ul");
+                items.className = "sales-order-items";
+                (pedido.pedido_detalles || []).forEach(detalle => {
+                    const line = document.createElement("li");
+                    line.textContent =
+                        `${detalle.cantidad} × ${detalle.producto_nombre} · ${formatPrice(detalle.precio_unitario)} c/u`;
+                    items.appendChild(line);
+                });
+
+                card.append(title, meta, items);
+                if (pedido.estado === "pendiente") {
+                    const confirmButton = document.createElement("button");
+                    confirmButton.type = "button";
+                    confirmButton.textContent = "CONFIRMAR VENTA";
+                    confirmButton.addEventListener("click", async () => {
+                        if (!window.confirm("¿Confirmar esta venta y descontar las unidades del inventario?")) {
+                            return;
+                        }
+                        confirmButton.disabled = true;
+                        message.textContent = "Confirmando venta...";
+                        const { error: confirmError } = await supabaseClient.rpc(
+                            "confirmar_venta_pedido",
+                            { p_pedido_id: pedido.id }
+                        );
+                        if (confirmError) {
+                            message.textContent = confirmError.message;
+                            confirmButton.disabled = false;
+                            return;
+                        }
+                        await Promise.all([cargarPedidosAdmin(), cargarProductosAdmin()]);
+                        message.textContent = "Venta confirmada y stock actualizado.";
+                    });
+
+                    const cancelButton = document.createElement("button");
+                    cancelButton.type = "button";
+                    cancelButton.textContent = "CANCELAR PEDIDO";
+                    cancelButton.addEventListener("click", async () => {
+                        if (!window.confirm("¿Cancelar este pedido pendiente? No se descontará stock.")) {
+                            return;
+                        }
+                        cancelButton.disabled = true;
+                        const { error: cancelError } = await supabaseClient.rpc(
+                            "cancelar_pedido_tienda",
+                            { p_pedido_id: pedido.id }
+                        );
+                        if (cancelError) {
+                            message.textContent = cancelError.message;
+                            cancelButton.disabled = false;
+                            return;
+                        }
+                        await cargarPedidosAdmin();
+                        message.textContent = "Pedido cancelado.";
+                    });
+                    card.append(confirmButton, cancelButton);
+                }
+
+                list.appendChild(card);
+            });
+        }
 
         async function mensajeErrorFuncion(error) {
             if (error?.context instanceof Response) {
@@ -91,8 +499,54 @@
                 form.style.display = "none";
                 return false;
             }
+            productAdmin.style.display = "block";
+            reviewAdmin.style.display = "block";
+            salesAdmin.style.display = "block";
+            await cargarProductosAdmin();
+            await cargarResenasAdmin();
+            await cargarPedidosAdmin();
             return true;
         }
+
+        document.getElementById("productForm").addEventListener("submit", async event => {
+            event.preventDefault();
+            const productForm = event.currentTarget;
+            const button = document.getElementById("productSubmit");
+            const productMessage = document.getElementById("productMessage");
+            button.disabled = true;
+            let uploadedPath = null;
+            try {
+                const file = document.getElementById("productImage").files?.[0];
+                const uploadedImage = await subirImagenProducto(file);
+                uploadedPath = uploadedImage.path;
+                const { error } = await supabaseClient.from("productos").insert({
+                    nombre: document.getElementById("productName").value.trim(),
+                    categoria: document.getElementById("productCategory").value,
+                    descripcion: document.getElementById("productDescription").value.trim(),
+                    precio: Number(document.getElementById("productPrice").value),
+                    imagen_url: uploadedImage.url,
+                    stock: Number(document.getElementById("productStock").value),
+                    activo: true
+                });
+
+                if (error) {
+                    await eliminarImagenSubida(uploadedPath);
+                    uploadedPath = null;
+                    throw new Error(error.message);
+                }
+
+                productMessage.textContent = "Producto agregado.";
+                productMessage.className = "success";
+                productForm.reset();
+                await cargarProductosAdmin();
+            } catch (error) {
+                productMessage.textContent =
+                    error instanceof Error ? error.message : "No se pudo agregar el producto.";
+                productMessage.className = "error";
+            } finally {
+                button.disabled = false;
+            }
+        });
 
         form.addEventListener("submit", async (event) => {
             event.preventDefault();

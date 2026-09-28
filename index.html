@@ -398,9 +398,18 @@
         }
 
         .card-icon {
-            font-size: 40px;
-
+            width: 100%;
+            height: 190px;
             margin-bottom: 20px;
+            object-fit: cover;
+            display: block;
+            filter: saturate(.85);
+            transition: transform .4s, filter .4s;
+        }
+
+        .card:hover .card-icon {
+            transform: scale(1.03);
+            filter: saturate(1);
         }
 
         .card h3 {
@@ -476,21 +485,9 @@
 
         .barber-photo {
             height: 280px;
-
-            background:
-                linear-gradient(
-                    145deg,
-                    #382b21,
-                    #111
-                );
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            font-size: 80px;
+            width: 100%;
+            display: block;
+            object-fit: cover;
         }
 
         .barber-info {
@@ -520,34 +517,280 @@
 
             border: 1px solid #302923;
 
-            padding: 25px;
+            padding: 14px 14px 22px;
 
             text-align: center;
+
+            position: relative;
+
+            overflow: hidden;
+
+            transition: transform .3s, border-color .3s, box-shadow .3s;
+        }
+
+        .product:hover {
+            transform: translateY(-7px);
+            border-color: var(--gold);
+            box-shadow: 0 18px 35px rgba(0, 0, 0, .35);
         }
 
         .product-img {
-            height: 220px;
-
-            background:
-                linear-gradient(
-                    145deg,
-                    #29221d,
-                    #0c0b0a
-                );
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            font-size: 75px;
+            height: 245px;
+            width: 100%;
+            object-fit: cover;
+            display: block;
+            filter: saturate(.8);
+            transition: transform .4s, filter .4s;
 
             margin-bottom: 20px;
         }
 
+        .product:hover .product-img {
+            transform: scale(1.04);
+            filter: saturate(1);
+        }
+
+        .product-tag {
+            position: absolute;
+            top: 26px;
+            left: 26px;
+            padding: 6px 9px;
+            color: #111;
+            background: var(--gold);
+            font-size: 10px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .product-category {
+            color: var(--gold);
+            font-size: 10px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
         .product h3 {
-            margin-bottom: 10px;
+            margin: 8px 0;
+            font-size: 20px;
+        }
+
+        .product-description {
+            min-height: 38px;
+            margin: 0 10px 14px;
+            color: var(--gray);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .product .price {
+            margin-bottom: 15px;
+        }
+
+        .product .add-cart {
+            width: 100%;
+        }
+
+        .shop-toolbar {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: -15px 0 28px;
+        }
+
+        .shop-filter {
+            padding: 9px 15px;
+            color: #ddd;
+            background: transparent;
+            border: 1px solid #51432c;
+            cursor: pointer;
+        }
+
+        .shop-filter.active,
+        .shop-filter:hover {
+            color: #111;
+            background: var(--gold);
+            border-color: var(--gold);
+        }
+
+        .product-stock {
+            min-height: 18px;
+            margin: -7px 0 12px;
+            color: #78d68a;
+            font-size: 12px;
+        }
+
+        .product-stock.out-of-stock {
+            color: #f28b82;
+        }
+
+        .product-details {
+            margin: 0 0 12px;
+            padding: 0;
+            color: var(--gold);
+            background: transparent;
+            border: 0;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .gallery {
+            background: #181513;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .gallery-card {
+            position: relative;
+            min-height: 280px;
+            overflow: hidden;
+            background: #211d19;
+        }
+
+        .gallery-card img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform .4s;
+        }
+
+        .gallery-card:hover img {
+            transform: scale(1.06);
+        }
+
+        .gallery-caption {
+            position: absolute;
+            inset: auto 0 0;
+            padding: 40px 20px 18px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, .9));
+        }
+
+        .gallery-caption h3 {
+            margin-bottom: 5px;
+        }
+
+        .gallery-caption p {
+            margin-bottom: 12px;
+            color: #ddd;
+            font-size: 13px;
+        }
+
+        .gallery-caption button {
+            padding: 9px 12px;
+            color: #111;
+            background: var(--gold);
+            border: 0;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .reviews {
+            background: #11100f;
+        }
+
+        .review-layout {
+            display: grid;
+            grid-template-columns: minmax(260px, .8fr) 1.2fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .review-form,
+        .review-list {
+            padding: 24px;
+            background: #1a1816;
+            border: 1px solid #302923;
+        }
+
+        .review-form label {
+            display: block;
+            margin: 12px 0 6px;
+            color: #ddd;
+            font-size: 13px;
+        }
+
+        .review-form input,
+        .review-form select,
+        .review-form textarea {
+            width: 100%;
+            padding: 11px;
+            color: white;
+            background: #111;
+            border: 1px solid #494038;
+        }
+
+        .review-form textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .review-form button {
+            margin-top: 15px;
+            padding: 11px 15px;
+            color: #111;
+            background: var(--gold);
+            border: 0;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .review-item {
+            padding: 16px 0;
+            border-bottom: 1px solid #302923;
+        }
+
+        .review-item:first-child {
+            padding-top: 0;
+        }
+
+        .review-stars {
+            color: var(--gold);
+            letter-spacing: 2px;
+        }
+
+        .review-meta {
+            margin-top: 6px;
+            color: #888;
+            font-size: 12px;
+        }
+
+        .review-message {
+            min-height: 18px;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+
+        .booking-success {
+            display: none;
+            padding: 20px;
+            color: #eee;
+            background: #1a1816;
+            border: 1px solid var(--gold);
+        }
+
+        .booking-success a {
+            display: inline-block;
+            margin: 14px 10px 0 0;
+            padding: 10px 14px;
+            color: #111;
+            background: var(--gold);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .booking-success button {
+            margin-top: 14px;
+            padding: 10px 14px;
+            color: white;
+            background: transparent;
+            border: 1px solid #777;
+            cursor: pointer;
         }
 
         /* =========================
@@ -1012,10 +1255,14 @@
             }
 
             .cards,
-            .barber-grid {
+            .barber-grid,
+            .gallery-grid {
                 grid-template-columns: 1fr;
             }
 
+            .review-layout {
+                grid-template-columns: 1fr;
+            }
             section {
                 padding: 75px 6%;
             }
@@ -1091,10 +1338,24 @@
 
         </a>
 
+        <a href="#galeria"
+           onclick="closeMenu()">
+
+            GALERÍA
+
+        </a>
+
         <a href="#tienda"
            onclick="closeMenu()">
 
             TIENDA
+
+        </a>
+
+        <a href="#resenas"
+           onclick="closeMenu()">
+
+            RESEÑAS
 
         </a>
 
@@ -1234,12 +1495,12 @@
 
     <div class="stat">
 
-        <strong>
-            99.98%
+    <strong id="ratingSummary">
+        Opiniones
         </strong>
 
         <span>
-            CALIFICACIONES
+        RESEÑAS DE CLIENTES
         </span>
 
     </div>
@@ -1272,15 +1533,15 @@
 
     </div>
 
-
     <div class="cards">
 
 
         <div class="card">
 
-            <div class="card-icon">
-                ✂️
-            </div>
+            <img
+                class="card-icon"
+                src="https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=900&q=85"
+                alt="Corte clásico masculino">
 
             <h3>
                 Corte Clásico
@@ -1295,25 +1556,15 @@
                 $25.000
             </div>
 
-            <button
-                class="add-cart"
-                onclick="addToCart(
-                    'Corte Clásico',
-                    25000
-                )">
-
-                AGREGAR AL CARRITO
-
-            </button>
-
         </div>
 
 
         <div class="card">
 
-            <div class="card-icon">
-                🧔
-            </div>
+            <img
+                class="card-icon"
+                src="https://images.unsplash.com/photo-1621605815971-fbc98d665033?auto=format&fit=crop&w=900&q=85"
+                alt="Barba premium perfilada">
 
             <h3>
                 Barba Premium
@@ -1328,25 +1579,15 @@
                 $20.000
             </div>
 
-            <button
-                class="add-cart"
-                onclick="addToCart(
-                    'Barba Premium',
-                    20000
-                )">
-
-                AGREGAR AL CARRITO
-
-            </button>
-
         </div>
 
 
         <div class="card">
 
-            <div class="card-icon">
-                🔥
-            </div>
+            <img
+                class="card-icon"
+                src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=900&q=85"
+                alt="Combo de corte y barba">
 
             <h3>
                 Combo Master
@@ -1361,19 +1602,73 @@
                 $40.000
             </div>
 
-            <button
-                class="add-cart"
-                onclick="addToCart(
-                    'Combo Master',
-                    40000
-                )">
-
-                AGREGAR AL CARRITO
-
-            </button>
-
         </div>
 
+    </div>
+
+</section>
+
+<!-- =========================
+     GALERÍA DE ESTILOS
+========================= -->
+
+<section class="gallery" id="galeria">
+
+    <div class="section-title">
+        <small>INSPÍRATE</small>
+        <h2>ENCUENTRA TU PRÓXIMO ESTILO</h2>
+        <p>Elige un look y reserva directamente con tu barbero.</p>
+    </div>
+
+    <div class="gallery-grid">
+        <article class="gallery-card">
+            <img src="https://images.unsplash.com/photo-1621605815971-fbc98d665033?auto=format&fit=crop&w=900&q=85" alt="Corte fade moderno">
+            <div class="gallery-caption">
+                <h3>Fade moderno</h3>
+                <p>Degradado limpio y acabado definido.</p>
+                <button type="button" onclick="reservarEstilo('Corte Clásico')">RESERVAR ESTE ESTILO</button>
+            </div>
+        </article>
+        <article class="gallery-card">
+            <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=900&q=85" alt="Corte clásico de barbería">
+            <div class="gallery-caption">
+                <h3>Clásico ejecutivo</h3>
+                <p>Un estilo pulido que nunca pasa de moda.</p>
+                <button type="button" onclick="reservarEstilo('Corte Clásico')">RESERVAR ESTE ESTILO</button>
+            </div>
+        </article>
+        <article class="gallery-card">
+            <img src="https://images.unsplash.com/photo-1621607512022-6aecc4fed814?auto=format&fit=crop&w=900&q=85" alt="Barba perfilada profesionalmente">
+            <div class="gallery-caption">
+                <h3>Barba definida</h3>
+                <p>Perfilado preciso y cuidado premium.</p>
+                <button type="button" onclick="reservarEstilo('Barba Premium')">RESERVAR ESTE ESTILO</button>
+            </div>
+        </article>
+        <article class="gallery-card">
+            <img src="https://images.unsplash.com/photo-1599351431202-1e0f0d0c4c3d?auto=format&fit=crop&w=900&q=85" alt="Corte con textura">
+            <div class="gallery-caption">
+                <h3>Textura natural</h3>
+                <p>Volumen y forma adaptados a ti.</p>
+                <button type="button" onclick="reservarEstilo('Corte Clásico')">RESERVAR ESTE ESTILO</button>
+            </div>
+        </article>
+        <article class="gallery-card">
+            <img src="https://images.unsplash.com/photo-1622286342621-4bd786c2447c?auto=format&fit=crop&w=900&q=85" alt="Servicio completo de corte y barba">
+            <div class="gallery-caption">
+                <h3>Look completo</h3>
+                <p>Corte y barba para renovar tu estilo.</p>
+                <button type="button" onclick="reservarEstilo('Combo Master')">RESERVAR ESTE ESTILO</button>
+            </div>
+        </article>
+        <article class="gallery-card">
+            <img src="https://images.unsplash.com/photo-1593702275687-f8b402bf1fb5?auto=format&fit=crop&w=900&q=85" alt="Acabado profesional de barbería">
+            <div class="gallery-caption">
+                <h3>Acabado premium</h3>
+                <p>Detalles precisos para una imagen impecable.</p>
+                <button type="button" onclick="reservarEstilo('Combo Master')">RESERVAR ESTE ESTILO</button>
+            </div>
+        </article>
     </div>
 
 </section>
@@ -1410,9 +1705,7 @@
 
         <div class="barber">
 
-            <div class="barber-photo">
-                🧔🏻
-            </div>
+            <img class="barber-photo" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=800&q=85" alt="Barbero Carlos">
 
             <div class="barber-info">
 
@@ -1431,9 +1724,7 @@
 
         <div class="barber">
 
-            <div class="barber-photo">
-                🧔🏽
-            </div>
+            <img class="barber-photo" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=800&q=85" alt="Barbero Andrés">
 
             <div class="barber-info">
 
@@ -1452,9 +1743,7 @@
 
         <div class="barber">
 
-            <div class="barber-photo">
-                🧔🏾
-            </div>
+            <img class="barber-photo" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=85" alt="Barbero Santiago">
 
             <div class="barber-info">
 
@@ -1500,19 +1789,37 @@
 
     </div>
 
+    <div class="shop-toolbar" id="shopFilters" aria-label="Filtrar productos">
+        <button type="button" class="shop-filter active" data-category="all">Todos</button>
+        <button type="button" class="shop-filter" data-category="Cabello">Cabello</button>
+        <button type="button" class="shop-filter" data-category="Barba">Barba</button>
+        <button type="button" class="shop-filter" data-category="Kits">Kits</button>
+    </div>
 
-    <div class="cards">
+    <div class="cards" id="productCatalog">
 
 
-        <div class="product">
+        <div class="product" data-category="Cabello">
 
-            <div class="product-img">
-                🧴
-            </div>
+            <span class="product-tag">MÁS VENDIDO</span>
+
+            <img
+                class="product-img"
+                src="https://images.unsplash.com/photo-1621607512214-68297480165e?auto=format&fit=crop&w=900&q=85"
+                alt="Pomada premium para cabello">
+
+            <div class="product-category">CABELLO · FIJACIÓN MEDIA</div>
 
             <h3>
                 Pomada Premium
             </h3>
+
+            <p class="product-description">
+                Brillo natural, textura moldeable y acabado profesional.
+            </p>
+
+            <p class="product-stock">Disponibilidad en tienda</p>
+            <button class="product-details" type="button" onclick="showNotification('Pomada Premium', 'Brillo natural y fijación media para un acabado profesional.')">VER DETALLES</button>
 
             <div class="price">
                 $35.000
@@ -1532,15 +1839,25 @@
         </div>
 
 
-        <div class="product">
+        <div class="product" data-category="Barba">
 
-            <div class="product-img">
-                🪒
-            </div>
+            <img
+                class="product-img"
+                src="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&w=900&q=85"
+                alt="Aceite premium para barba">
+
+            <div class="product-category">BARBA · CUIDADO DIARIO</div>
 
             <h3>
                 Aceite para Barba
             </h3>
+
+            <p class="product-description">
+                Nutre, suaviza y deja una fragancia elegante durante todo el día.
+            </p>
+
+            <p class="product-stock">Disponibilidad en tienda</p>
+            <button class="product-details" type="button" onclick="showNotification('Aceite para Barba', 'Nutre y suaviza tu barba con una fragancia elegante.')">VER DETALLES</button>
 
             <div class="price">
                 $28.000
@@ -1560,15 +1877,27 @@
         </div>
 
 
-        <div class="product">
+        <div class="product" data-category="Kits">
 
-            <div class="product-img">
-                🧼
-            </div>
+            <span class="product-tag">EXPERIENCIA COMPLETA</span>
+
+            <img
+                class="product-img"
+                src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=900&q=85"
+                alt="Kit profesional de barbería">
+
+            <div class="product-category">KIT · BARBERÍA EN CASA</div>
 
             <h3>
                 Kit Barber
             </h3>
+
+            <p class="product-description">
+                Pomada, aceite y peine premium para mantener tu estilo.
+            </p>
+
+            <p class="product-stock">Disponibilidad en tienda</p>
+            <button class="product-details" type="button" onclick="showNotification('Kit Barber', 'Incluye los esenciales para mantener tu estilo en casa.')">VER DETALLES</button>
 
             <div class="price">
                 $60.000
@@ -1589,6 +1918,47 @@
 
     </div>
 
+</section>
+
+<!-- =========================
+     RESEÑAS
+========================= -->
+
+<section class="reviews" id="resenas">
+    <div class="section-title">
+        <small>EXPERIENCIAS REALES</small>
+        <h2>OPINIONES DE CLIENTES</h2>
+        <p>Comparte tu experiencia después de una cita atendida.</p>
+    </div>
+
+    <div class="review-layout">
+        <form id="reviewForm" class="review-form">
+            <h3>Califica tu visita</h3>
+            <label for="reviewAppointment">Código de cita</label>
+            <input id="reviewAppointment" type="text" placeholder="UUID de la cita" required>
+
+            <label for="reviewPhone">Teléfono usado en la reserva</label>
+            <input id="reviewPhone" type="tel" required>
+
+            <label for="reviewRating">Calificación</label>
+            <select id="reviewRating" required>
+                <option value="5">5 - Excelente</option>
+                <option value="4">4 - Muy buena</option>
+                <option value="3">3 - Buena</option>
+                <option value="2">2 - Regular</option>
+                <option value="1">1 - Puede mejorar</option>
+            </select>
+
+            <label for="reviewComment">Comentario (opcional)</label>
+            <textarea id="reviewComment" maxlength="500"></textarea>
+            <button type="submit">ENVIAR RESEÑA</button>
+            <p id="reviewMessage" class="review-message" role="alert"></p>
+        </form>
+
+        <div id="reviewList" class="review-list" aria-live="polite">
+            <p>Cargando opiniones...</p>
+        </div>
+    </div>
 </section>
 
 
@@ -1748,7 +2118,7 @@
             class="checkout"
             onclick="checkout()">
 
-            FINALIZAR COMPRA
+            PEDIR POR WHATSAPP
 
         </button>
 
@@ -1884,11 +2254,23 @@
                     Hora
                 </label>
 
-                <input
-                    type="time"
-                    id="reservationTime"
-                    required>
+                <select id="reservationTime" required disabled>
+                    <option value="">
+                        Primero selecciona barbero y fecha
+                    </option>
+                </select>
 
+            </div>
+
+            <p
+                id="availabilityMessage"
+                style="margin: -6px 0 18px; color: #aaa; font-size: 13px;">
+                Selecciona un barbero y una fecha para consultar disponibilidad.
+            </p>
+
+            <div
+                id="availabilityCalendar"
+                style="display:grid; grid-template-columns:repeat(auto-fit,minmax(92px,1fr)); gap:8px; margin-bottom:18px;">
             </div>
 
 
@@ -1901,6 +2283,15 @@
             </button>
 
         </form>
+
+        <div id="bookingSuccess" class="booking-success">
+            <h3>¡Tu cita quedó registrada!</h3>
+            <p id="bookingSummary"></p>
+            <a id="bookingWhatsapp" href="#" target="_blank" rel="noopener">
+                CONFIRMAR POR WHATSAPP
+            </a>
+            <button type="button" onclick="closeReservation()">CERRAR</button>
+        </div>
 
     </div>
 
@@ -1951,6 +2342,183 @@
             SUPABASE_KEY
         );
 
+    const WHATSAPP_NEGOCIO = "573246706782";
+
+
+    function aplicarFiltroTienda(categoria) {
+        document.querySelectorAll("#productCatalog .product").forEach(producto => {
+            producto.style.display =
+                categoria === "all" ||
+                producto.dataset.category === categoria
+                    ? ""
+                    : "none";
+        });
+    }
+
+
+    document.querySelectorAll(".shop-filter").forEach(button => {
+        button.addEventListener("click", () => {
+            document.querySelectorAll(".shop-filter").forEach(filter => {
+                filter.classList.toggle("active", filter === button);
+            });
+            aplicarFiltroTienda(button.dataset.category || "all");
+        });
+    });
+
+
+    async function cargarProductosTienda() {
+        const { data, error } = await supabaseClient
+            .from("productos")
+            .select("id,nombre,categoria,descripcion,precio,imagen_url,stock")
+            .eq("activo", true)
+            .order("nombre");
+
+        if (error) {
+            console.error("No se pudo cargar el catálogo administrable:", error);
+            return;
+        }
+
+        if (!data || data.length === 0) {
+            return;
+        }
+
+        const catalog = document.getElementById("productCatalog");
+        catalog.replaceChildren();
+
+        data.forEach(producto => {
+            const card = document.createElement("article");
+            card.className = "product";
+            card.dataset.category = producto.categoria;
+
+            const image = document.createElement("img");
+            image.className = "product-img";
+            image.src = producto.imagen_url;
+            image.alt = producto.nombre;
+            image.loading = "lazy";
+            image.onerror = () => {
+                image.src = "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=900&q=85";
+            };
+
+            const category = document.createElement("div");
+            category.className = "product-category";
+            category.textContent = producto.categoria;
+
+            const name = document.createElement("h3");
+            name.textContent = producto.nombre;
+
+            const description = document.createElement("p");
+            description.className = "product-description";
+            description.textContent = producto.descripcion;
+
+            const stock = document.createElement("p");
+            stock.className = "product-stock";
+            stock.textContent = producto.stock > 0
+                ? `${producto.stock} unidades disponibles`
+                : "Agotado";
+            if (producto.stock <= 0) {
+                stock.classList.add("out-of-stock");
+            }
+
+            const details = document.createElement("button");
+            details.type = "button";
+            details.className = "product-details";
+            details.textContent = "VER DETALLES";
+            details.addEventListener("click", () => {
+                showNotification(producto.nombre, producto.descripcion);
+            });
+
+            const price = document.createElement("div");
+            price.className = "price";
+            price.textContent = formatPrice(producto.precio);
+
+            const add = document.createElement("button");
+            add.type = "button";
+            add.className = "add-cart";
+            add.textContent = producto.stock > 0 ? "AGREGAR" : "AGOTADO";
+            add.disabled = producto.stock <= 0;
+            add.addEventListener("click", () => {
+                addToCart(
+                    producto.nombre,
+                    producto.precio,
+                    producto.stock,
+                    producto.id
+                );
+            });
+
+            card.append(image, category, name, description, stock, details, price, add);
+            catalog.appendChild(card);
+        });
+
+        aplicarFiltroTienda(
+            document.querySelector(".shop-filter.active")?.dataset.category || "all"
+        );
+    }
+
+
+    async function cargarResenas() {
+        const list = document.getElementById("reviewList");
+        const { data, error } = await supabaseClient
+            .from("resenas")
+            .select("cliente_nombre,calificacion,comentario,created_at")
+            .eq("aprobada", true)
+            .order("created_at", { ascending: false })
+            .limit(8);
+
+        if (error) {
+            console.error("No se pudieron cargar las reseñas:", error);
+            list.textContent = `No se pudieron cargar las opiniones: ${error.message}`;
+            return;
+        }
+
+        list.replaceChildren();
+        if (!data || data.length === 0) {
+            list.textContent = "Aún no hay opiniones aprobadas.";
+            document.getElementById("ratingSummary").textContent = "—";
+            return;
+        }
+
+        const average = data.reduce((total, review) => total + review.calificacion, 0) / data.length;
+        document.getElementById("ratingSummary").textContent = `${average.toFixed(1)}/5`;
+
+        data.forEach(review => {
+            const item = document.createElement("article");
+            item.className = "review-item";
+            const stars = document.createElement("div");
+            stars.className = "review-stars";
+            stars.textContent = "★".repeat(review.calificacion) + "☆".repeat(5 - review.calificacion);
+            const comment = document.createElement("p");
+            comment.textContent = review.comentario || "Excelente servicio.";
+            const meta = document.createElement("p");
+            meta.className = "review-meta";
+            meta.textContent = `${review.cliente_nombre} · ${new Date(review.created_at).toLocaleDateString("es-CO")}`;
+            item.append(stars, comment, meta);
+            list.appendChild(item);
+        });
+    }
+
+
+    document.getElementById("reviewForm").addEventListener("submit", async event => {
+        event.preventDefault();
+        const message = document.getElementById("reviewMessage");
+        message.textContent = "Enviando reseña...";
+        const { error } = await supabaseClient.rpc("crear_resena_cita", {
+            p_cita_id: document.getElementById("reviewAppointment").value.trim(),
+            p_telefono: document.getElementById("reviewPhone").value.trim(),
+            p_calificacion: Number(document.getElementById("reviewRating").value),
+            p_comentario: document.getElementById("reviewComment").value.trim()
+        });
+
+        if (error) {
+            message.textContent = error.message;
+            message.style.color = "#f28b82";
+            return;
+        }
+
+        event.currentTarget.reset();
+        message.textContent = "Gracias. Tu reseña quedó pendiente de aprobación.";
+        message.style.color = "#78d68a";
+    });
+
 
     /* =====================================
        CARRITO
@@ -1959,11 +2527,17 @@
     let cart = [];
 
 
-    function addToCart(name, price) {
+    function addToCart(name, price, stock = Infinity, productId = null) {
+        const quantityInCart = cart.filter(item => item.productId === productId).length;
+        if (quantityInCart >= stock) {
+            showNotification("Stock insuficiente", "No hay más unidades disponibles de este producto.");
+            return;
+        }
 
         cart.push({
             name: name,
-            price: price
+            price: price,
+            productId: productId
         });
 
 
@@ -2161,47 +2735,98 @@
     }
 
 
-    function checkout() {
-
+    async function checkout() {
         if (cart.length === 0) {
-
-            showNotification(
-                "Carrito vacío",
-                "Agrega algún producto primero."
-            );
-
+            showNotification("Carrito vacío", "Agrega algún producto primero.");
             return;
         }
 
-
-        const total =
-            cart.reduce(
-                (sum, item) =>
-                    sum + item.price,
-                0
+        if (cart.some(item => !item.productId)) {
+            showNotification(
+                "Catálogo no disponible",
+                "No se pudo identificar el producto en inventario. Recarga la página e intenta de nuevo."
             );
+            return;
+        }
 
+        const opened = window.open("about:blank", "_blank");
+        if (!opened) {
+            showNotification(
+                "No se pudo abrir WhatsApp",
+                "Permite ventanas emergentes e intenta nuevamente."
+            );
+            return;
+        }
 
-        showNotification(
-            "¡Compra realizada!",
-            "Total: " +
-            formatPrice(total)
-        );
+        const items = Array.from(
+            cart.reduce((quantities, item) => {
+                quantities.set(
+                    item.productId,
+                    (quantities.get(item.productId) || 0) + 1
+                );
+                return quantities;
+            }, new Map())
+        ).map(([id, cantidad]) => ({ id, cantidad }));
 
+        const button = document.querySelector(".checkout");
+        button.disabled = true;
+        button.textContent = "REGISTRANDO PEDIDO...";
 
-        cart = [];
+        try {
+            const { data, error } = await supabaseClient.rpc("crear_pedido_tienda", {
+                p_items: items,
+                p_nombre: "Cliente web",
+                p_telefono: ""
+            });
 
+            if (error) {
+                opened.close();
+                showNotification("No se pudo registrar el pedido", error.message);
+                return;
+            }
 
-        updateCart();
+            const pedido = Array.isArray(data) ? data[0] : null;
+            if (!pedido?.pedido_id || pedido.total == null) {
+                opened.close();
+                showNotification(
+                    "No se pudo registrar el pedido",
+                    "Supabase no devolvió los datos del pedido. Vuelve a intentarlo."
+                );
+                return;
+            }
 
+            const lines = cart.map(item =>
+                `- ${item.name}: ${formatPrice(item.price)}`
+            );
+            const message = [
+                "Hola, quiero confirmar este pedido en Barber Master:",
+                ...lines,
+                `Total registrado: ${formatPrice(Number(pedido.total))}`,
+                `Código del pedido: ${pedido.pedido_id}`,
+                "El pedido queda pendiente hasta que la barbería confirme la venta."
+            ].join("\n");
 
-        setTimeout(
-            () => {
-                closeCart();
-            },
-            1500
-        );
-
+            opened.opener = null;
+            opened.location.href =
+                `https://wa.me/${WHATSAPP_NEGOCIO}?text=${encodeURIComponent(message)}`;
+            cart = [];
+            updateCart();
+            closeCart();
+            showNotification(
+                "Pedido registrado",
+                "Quedó pendiente. El inventario se descontará cuando confirmes la venta en administración."
+            );
+        } catch (error) {
+            opened.close();
+            console.error("No se pudo registrar el pedido de tienda:", error);
+            showNotification(
+                "No se pudo registrar el pedido",
+                error instanceof Error ? error.message : "Revisa tu conexión e intenta nuevamente."
+            );
+        } finally {
+            button.disabled = false;
+            button.textContent = "PEDIR POR WHATSAPP";
+        }
     }
 
 
@@ -2262,7 +2887,20 @@
        MODAL DE RESERVA
     ===================================== */
 
-    function openReservation() {
+    function openReservation(service = "") {
+
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, "0");
+        const day = String(today.getDate()).padStart(2, "0");
+
+        document.getElementById("reservationDate").min =
+            `${year}-${month}-${day}`;
+        document.getElementById("reservationForm").style.display = "";
+        document.getElementById("bookingSuccess").style.display = "none";
+        if (service) {
+            document.getElementById("service").value = service;
+        }
 
         document
             .getElementById(
@@ -2272,6 +2910,11 @@
                 "active"
             );
 
+    }
+
+
+    function reservarEstilo(service) {
+        openReservation(service);
     }
 
 
@@ -2319,18 +2962,7 @@
 
 
         const { data, error } =
-            await supabaseClient
-                .from("barberos")
-                .select(
-                    "id, nombre"
-                )
-                .eq(
-                    "activo",
-                    true
-                )
-                .order(
-                    "nombre"
-                );
+            await supabaseClient.rpc("listar_barberos_activos");
 
 
         if (error) {
@@ -2343,7 +2975,7 @@
 
             selector.innerHTML = `
                 <option value="">
-                    Error cargando barberos
+                    Error: ${error.message}
                 </option>
             `;
 
@@ -2407,6 +3039,166 @@
         );
 
     }
+
+
+    /* =====================================
+       CONSULTAR DISPONIBILIDAD
+    ===================================== */
+
+    const HORA_INICIO = 9 * 60;
+    const HORA_FIN = 18 * 60;
+    const DURACION_CITA = 30;
+    let horariosOcupados = [];
+    let disponibilidadConsultada = false;
+
+
+    function generarHorarios() {
+        const horarios = [];
+
+        for (
+            let minutos = HORA_INICIO;
+            minutos < HORA_FIN;
+            minutos += DURACION_CITA
+        ) {
+            const horas = String(Math.floor(minutos / 60)).padStart(2, "0");
+            const minutosHora = String(minutos % 60).padStart(2, "0");
+            horarios.push(`${horas}:${minutosHora}`);
+        }
+
+        return horarios;
+    }
+
+
+    function mostrarHorarios(horarios, disponibles) {
+        const selector = document.getElementById("reservationTime");
+        const calendar = document.getElementById("availabilityCalendar");
+
+        selector.innerHTML = "";
+        calendar.innerHTML = "";
+
+        horarios.forEach(hora => {
+            const disponible = disponibles.includes(hora);
+            const option = document.createElement("option");
+            option.value = hora;
+            option.textContent = disponible
+                ? `${hora} - Disponible`
+                : `${hora} - Ocupado`;
+            option.disabled = !disponible;
+            selector.appendChild(option);
+
+            const button = document.createElement("button");
+            button.type = "button";
+            button.textContent = hora;
+            button.disabled = !disponible;
+            button.title = disponible ? "Horario disponible" : "Horario ocupado";
+            button.style.padding = "9px 4px";
+            button.style.borderRadius = "5px";
+            button.style.border = "1px solid " + (disponible ? "#78d68a" : "#555");
+            button.style.background = disponible ? "#18251b" : "#252525";
+            button.style.color = disponible ? "#78d68a" : "#777";
+            button.style.cursor = disponible ? "pointer" : "not-allowed";
+
+            if (disponible) {
+                button.addEventListener("click", () => {
+                    selector.value = hora;
+                    calendar.querySelectorAll("button").forEach(item => {
+                        item.style.outline = "none";
+                    });
+                    button.style.outline = "2px solid #d5ad3d";
+                });
+            }
+
+            calendar.appendChild(button);
+        });
+
+        selector.disabled = disponibles.length === 0;
+        if (disponibles.length > 0) {
+            selector.value = disponibles[0];
+        }
+    }
+
+
+    async function cargarDisponibilidad() {
+
+        const barberId =
+            document.getElementById("barbero").value;
+
+        const date =
+            document.getElementById("reservationDate").value;
+
+        const message =
+            document.getElementById("availabilityMessage");
+
+        horariosOcupados = [];
+        disponibilidadConsultada = false;
+        mostrarHorarios(generarHorarios(), []);
+
+        if (!barberId || !date) {
+            message.textContent =
+                "Selecciona un barbero y una fecha para consultar disponibilidad.";
+            message.style.color = "#aaa";
+            return;
+        }
+
+        const selectedDate = new Date(`${date}T00:00:00`);
+        const day = selectedDate.getDay();
+
+        if (day === 0) {
+            message.textContent =
+                "La barbería no atiende los domingos. Selecciona otro día.";
+            message.style.color = "#f28b82";
+            return;
+        }
+
+        message.textContent = "Consultando disponibilidad...";
+        message.style.color = "#aaa";
+
+        const { data, error } =
+            await supabaseClient.rpc("obtener_horarios_ocupados", {
+                p_barbero_id: barberId,
+                p_fecha: date
+            });
+
+        if (error) {
+            console.error("Error consultando disponibilidad:", error);
+            message.textContent =
+                `No se pudo consultar la disponibilidad: ${error.message}`;
+            message.style.color = "#f28b82";
+            return;
+        }
+
+        horariosOcupados = (data || [])
+            .map(cita => String(cita.hora).slice(0, 5));
+        disponibilidadConsultada = true;
+
+        const horarios = generarHorarios();
+        const disponibles = horarios.filter(
+            hora => !horariosOcupados.includes(hora)
+        );
+        mostrarHorarios(horarios, disponibles);
+
+        if (horariosOcupados.length === 0) {
+            message.textContent =
+                "Todos los horarios están disponibles para este día.";
+            message.style.color = "#78d68a";
+            return;
+        }
+
+        message.innerHTML =
+            "<strong>" + disponibles.length +
+            "</strong> horarios disponibles. Ocupados: <strong>" +
+            horariosOcupados.join(", ") + "</strong>";
+        message.style.color = "#f1ce67";
+    }
+
+
+    document
+        .getElementById("barbero")
+        .addEventListener("change", cargarDisponibilidad);
+
+    document
+        .getElementById("reservationDate")
+        .addEventListener("change", cargarDisponibilidad);
 
 
     /* =====================================
@@ -2545,6 +3337,24 @@
 
                 }
 
+                await cargarDisponibilidad();
+
+                if (!disponibilidadConsultada) {
+                    showNotification(
+                        "No se pudo validar",
+                        "No se pudo consultar la disponibilidad. Intenta nuevamente."
+                    );
+                    return;
+                }
+
+                if (horariosOcupados.includes(time)) {
+                    showNotification(
+                        "Horario no disponible",
+                        "Ese horario ya está reservado. Elige otra hora."
+                    );
+                    return;
+                }
+
 
                 const button =
                     this.querySelector(
@@ -2563,7 +3373,7 @@
                 try {
 
                     const {
-                        data,
+                        data: cita,
                         error
                     } =
                         await supabaseClient
@@ -2592,7 +3402,8 @@
                                     "pendiente"
 
                             })
-                            .select();
+                            .select("id")
+                            .single();
 
 
                     if (error) {
@@ -2614,21 +3425,36 @@
                     }
 
 
-                    console.log(
-                        "CITA CREADA:",
-                        data
-                    );
+                    const nombreBarbero =
+                        document.getElementById("barbero")
+                            .selectedOptions[0].textContent;
+                    const fechaLegible =
+                        new Date(`${date}T00:00:00`).toLocaleDateString("es-CO");
+                    const resumen =
+                        `${service} con ${nombreBarbero} el ${fechaLegible} a las ${time}. Código de cita: ${cita.id}`;
+                    const mensajeWhatsApp = [
+                        "Hola, acabo de reservar una cita en Barber Master.",
+                        `Nombre: ${name}`,
+                        `Teléfono: ${phone}`,
+                        `Servicio: ${service}`,
+                        `Barbero: ${nombreBarbero}`,
+                        `Fecha: ${fechaLegible}`,
+                        `Hora: ${time}`,
+                        `Código de cita: ${cita.id}`
+                    ].join("\n");
 
-
-                    closeReservation();
-
-
-                    this.reset();
-
+                    document.getElementById("bookingSummary").textContent =
+                        resumen;
+                    document.getElementById("bookingWhatsapp").href =
+                        `https://wa.me/${WHATSAPP_NEGOCIO}?text=${encodeURIComponent(mensajeWhatsApp)}`;
+                    document.getElementById("reservationForm").reset();
+                    document.getElementById("reservationForm").style.display = "none";
+                    document.getElementById("bookingSuccess").style.display = "block";
+                    document.getElementById("reviewAppointment").value = cita.id;
 
                     showNotification(
                         "¡Cita reservada!",
-                        "Tu reserva fue registrada correctamente."
+                        "Confirma los detalles con Barber Master por WhatsApp."
                     );
 
                 }
@@ -2746,6 +3572,8 @@
     configurarFecha();
 
     cargarBarberos();
+    cargarProductosTienda();
+    cargarResenas();
 
 </script>
 
